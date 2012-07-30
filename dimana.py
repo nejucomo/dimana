@@ -2,11 +2,13 @@
 
 Example:
 >>> from dimana import Dimensional
+
 >>> Feet = Dimensional.get_dimension('Feet')
 >>> Lbs = Dimensional.get_dimension('Lbs')
 >>> Sec = Dimensional.get_dimension('Sec')
+
 >>> Feet(23) * Lbs(13) / (Sec(1) * Sec(1))
-299 [Feet*Lbs/(Sec^2)]
+299 [(Feet*Lbs) / Sec^2]
 """
 
 from decimal import Decimal
@@ -21,7 +23,7 @@ class Dimensional (object):
 
     @staticmethod
     def _get_multi(dims):
-        key = 'Dimensional_' + '_'.join( '%s_%s' % p for p in sorted(dims.items()))
+        key = 'Dimensional_' + '_'.join( '%s_%s' % p for p in sorted(dims.items())).replace('-','_')
     
         try:
             return Dimensional._subtype_cache[key]
@@ -32,15 +34,7 @@ class Dimensional (object):
         
     @staticmethod
     def _define_new(name, dims):
-        rep = Dimensional._stringify_dims(dims)
-
-        clsdict = {
-            '__init__': lambda self: None,
-            '_dims': dims,
-            '__str__': lambda self: rep,
-            }
-
-        return type(name, (Dimensional,), clsdict)
+        return type(name, (Dimensional,), {'_dims': dims})
 
     _subtype_cache = {}
 
@@ -84,7 +78,14 @@ class Dimensional (object):
 
     @property
     def inverse(self):
+        return self.inverseunits( Decimal(1) / self.value )
+
+    @property
+    def inverseunits(self):
         return type(self)._get_multi(dict( (k, -v) for (k, v) in self._dims.iteritems() ))
+
+    def __repr__(self):
+        return '%s %s' % (self.value, self.dimstr)
 
     def __cmp__(self, other):
         typecheck(other, type(self))
