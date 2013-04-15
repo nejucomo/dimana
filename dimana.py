@@ -24,14 +24,14 @@ class Dimensional (object):
     @staticmethod
     def _get_multi(dims):
         key = 'Dimensional_' + '_'.join( '%s_%s' % p for p in sorted(dims.items())).replace('-','_')
-    
+
         try:
             return Dimensional._subtype_cache[key]
         except KeyError:
             subtype = Dimensional._define_new(key, dims)
             Dimensional._subtype_cache[key] = subtype
             return subtype
-        
+
     @staticmethod
     def _define_new(name, dims):
         return type(name, (Dimensional,), {'_dims': dims})
