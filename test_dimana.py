@@ -7,14 +7,18 @@ import dimana
 class DimensionalTests (unittest.TestCase):
 
     def setUp(self):
-        self.units = ['m', 'sec', 'kg', 'newton']
-        for unit in self.units:
-            setattr(self, unit, dimana.Dimensional.get_dimension(unit))
+        self.units = []
+
+        for unitname in ['m', 'sec', 'kg', 'newton']:
+            unit = dimana.Dimensional.get_dimension(unitname)
+            self.units.append(unit)
+            setattr(self, unitname, unit)
+
+        # Test dimensionless in all unit-type tests:
+        self.units.append(dimana.Dimensional)
 
     def test_additive_laws(self):
-
-        @self._test_each_unit
-        def add_tests(u):
+        for u in self.units:
             self.assertEqual(u.one, u.zero + u.one)
             self.assertEqual(u.one, u.one - u.zero)
 
@@ -22,8 +26,7 @@ class DimensionalTests (unittest.TestCase):
 
         zero = dimana.Dimensional('0')
 
-        @self._test_each_unit
-        def mult_tests(u):
+        for u in self.units:
             self.assertEqual(u.zero * u.zero, u.zero * u.one)
             self.assertEqual(zero, u.zero / u.one)
 
@@ -31,10 +34,9 @@ class DimensionalTests (unittest.TestCase):
 
         one = dimana.Dimensional('1')
 
-        @self._test_each_unit
-        def mult_tests(u):
-            self.assertEqual(one, u.zero ** 0)
+        for u in self.units:
             self.assertEqual(one, u.one ** 0)
+            self.assertEqual(one, u.zero ** 0)
             self.assertEqual(u.one * u.one, u.one ** 2)
             self.assertEqual(u.inverse.one, u.one ** -1)
             self.assertEqual(one, u.one * (u.one ** -1))
@@ -43,11 +45,6 @@ class DimensionalTests (unittest.TestCase):
         conv = self.newton.one / (self.kg.one * self.m.one / (self.sec.one ** 2))
 
         self.assertEqual('1.0 [(newton*sec^2) / (m*kg)]', repr(conv))
-
-    def _test_each_unit(self, f):
-        for unitname in self.units:
-            unit = getattr(self, unitname)
-            f(unit)
 
 
 
