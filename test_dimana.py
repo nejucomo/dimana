@@ -12,7 +12,9 @@ class DimensionalTests (unittest.TestCase):
             setattr(self, unit, dimana.Dimensional.get_dimension(unit))
 
     def test_constants_and_field_identities(self):
-        for unit in self.units:
+        for unitname in self.units:
+            unit = getattr(self, unitname)
+
             self.assertEqual(unit.one, unit.zero + unit.one)
             self.assertEqual(unit.one, unit.one - unit.zero)
 
@@ -20,9 +22,11 @@ class DimensionalTests (unittest.TestCase):
             self.assertEqual(dimana.Dimensional.NoDim('0'), unit.zero / unit.one)
 
     def test_newtons_repr(self):
-        newtons_per_kilogram_meter_per_second2 = self.newton.one / (self.kg.one * self.m.one / (self.sec.one ** 2))
+        conv = self.newton.one / (self.kg.one * self.m.one / (self.sec.one ** 2))
 
-        self.assertEqual('1.0 [N * sec^2 / (kg * m)', repr(newtons_per_kilogram_meter_per_second2))
+        self.assertEqual('1.0 [(newton*sec^2) / (m*kg)]', repr(conv))
+
+
 
 
 

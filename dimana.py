@@ -35,6 +35,11 @@ class Dimensional (object):
         except KeyError:
             subtype = Dimensional._define_new(key, dims)
             Dimensional._subtype_cache[key] = subtype
+
+            # Constants:
+            subtype.zero = subtype('0.0')
+            subtype.one = subtype('1.0')
+
             return subtype
 
     @staticmethod
@@ -117,6 +122,16 @@ class Dimensional (object):
 
         cls = Dimensional._get_multi(dims)
         return cls(self.value * other.value)
+
+    def __pow__(self, p):
+        dims={}
+        for (unit, power) in self._dims.items():
+            powerpower = power * p
+            if powerpower != 0:
+                dims[unit] = powerpower
+
+        cls = Dimensional._get_multi(dims)
+        return cls(self.value)
 
     def __div__(self, other):
         return self * other.inverse
