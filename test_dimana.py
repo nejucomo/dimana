@@ -20,7 +20,7 @@ class DimensionalTests (unittest.TestCase):
             self.assertEqual(dimana.Dimensional.NoDim('0'), unit.zero / unit.one)
 
     def test_newtons_repr(self):
-        newtons_per_kilogram_meter_per_second2 = self.newton.one / (self.kg.one * self.m.one / (self.sec ** 2))
+        newtons_per_kilogram_meter_per_second2 = self.newton.one / (self.kg.one * self.m.one / (self.sec.one ** 2))
 
         self.assertEqual('1.0 [N * sec^2 / (kg * m)', repr(newtons_per_kilogram_meter_per_second2))
 
