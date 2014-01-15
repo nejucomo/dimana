@@ -20,7 +20,7 @@ class DimensionalTests (unittest.TestCase):
 
     def test_multiplicative_laws(self):
 
-        zero = dimana.Dimensional.NoDim('0')
+        zero = dimana.Dimensional('0')
 
         @self._test_each_unit
         def mult_tests(u):
@@ -29,7 +29,7 @@ class DimensionalTests (unittest.TestCase):
 
     def test_power_laws(self):
 
-        one = dimana.Dimensional.NoDim('1')
+        one = dimana.Dimensional('1')
 
         @self._test_each_unit
         def mult_tests(u):
