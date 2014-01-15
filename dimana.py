@@ -124,14 +124,20 @@ class Dimensional (object):
         return cls(self.value * other.value)
 
     def __pow__(self, p):
-        dims={}
-        for (unit, power) in self._dims.items():
-            powerpower = power * p
-            if powerpower != 0:
-                dims[unit] = powerpower
+        if p == 1.0:
+            return self
+        elif p == 0:
+            # NOTE: Without this special case, Decimal('0') ** 0 raises an exception.
+            return Dimensional.one
+        else:
+            dims={}
+            for (unit, power) in self._dims.items():
+                powerpower = power * p
+                if powerpower != 0:
+                    dims[unit] = powerpower
 
-        cls = Dimensional._get_multi(dims)
-        return cls(self.value ** p)
+            cls = Dimensional._get_multi(dims)
+            return cls(self.value ** p)
 
     def __div__(self, other):
         return self * other.inverse
