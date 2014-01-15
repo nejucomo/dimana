@@ -1,3 +1,8 @@
+# Copyright 2014 Nathan Wilcox
+#
+# This file is distributed under the terms of the TGPPL v. 1.0 found
+# in ./COPYING.TGPPL.rst.
+
 """_Dim_ensional _Ana_lysis - Values with associated measurement units.
 
 Example:
