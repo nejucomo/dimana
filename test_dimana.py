@@ -38,7 +38,7 @@ class DimensionalTests (unittest.TestCase):
             self.assertEqual(one, u.one ** 0)
             self.assertEqual(one, u.zero ** 0)
             self.assertEqual(u.one * u.one, u.one ** 2)
-            self.assertEqual(u.inverse.one, u.one ** -1)
+            self.assertEqual(u.one.inverse, u.one ** -1)
             self.assertEqual(one, u.one * (u.one ** -1))
 
     def test_newtons_repr(self):
