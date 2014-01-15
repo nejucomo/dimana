@@ -131,10 +131,13 @@ class Dimensional (object):
                 dims[unit] = powerpower
 
         cls = Dimensional._get_multi(dims)
-        return cls(self.value)
+        return cls(self.value ** p)
 
     def __div__(self, other):
         return self * other.inverse
+
+Dimensional.zero = Dimensional('0.0')
+Dimensional.one = Dimensional('1.0')
 
 
 def typecheck(i, t):
