@@ -4,18 +4,18 @@ import unittest
 import dimana
 
 
-class DimensionalTests (unittest.TestCase):
+class DimanaTests (unittest.TestCase):
 
     def setUp(self):
         self.units = []
 
         for unitname in ['m', 'sec', 'kg', 'newton']:
-            unit = dimana.Dimensional.get_dimension(unitname)
+            unit = dimana.Dimana.get_dimension(unitname)
             self.units.append(unit)
             setattr(self, unitname, unit)
 
         # Test dimensionless in all unit-type tests:
-        self.units.append(dimana.Dimensional)
+        self.units.append(dimana.Dimana)
 
     def test_additive_laws(self):
         for u in self.units:
@@ -24,7 +24,7 @@ class DimensionalTests (unittest.TestCase):
 
     def test_multiplicative_laws(self):
 
-        zero = dimana.Dimensional('0')
+        zero = dimana.Dimana('0')
 
         for u in self.units:
             self.assertEqual(u.zero * u.zero, u.zero * u.one)
@@ -32,7 +32,7 @@ class DimensionalTests (unittest.TestCase):
 
     def test_power_laws(self):
 
-        one = dimana.Dimensional('1')
+        one = dimana.Dimana('1')
 
         for u in self.units:
             self.assertEqual(one, u.one ** 0)
