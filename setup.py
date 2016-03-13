@@ -1,14 +1,16 @@
 #! /usr/bin/env python
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
-setup(name='dimana',
-      description='Dimensional Analysis - arithmetic with measurement units.',
-      author='Nathan Wilcox',
-      author_email='nejucomo@gmail.com',
-      version='0.2.dev0',
-      url='https://github.org/nejucomo/dimana',
-      license='TGPPLv1.0',
-      py_modules=['dimana'],
-      test_suite='test_dimana',
-      )
+PKG = 'dimana'
+
+setup(
+    name=PKG,
+    description='Dimensional Analysis - arithmetic with measurement units.',
+    author='Nathan Wilcox',
+    author_email='nejucomo@gmail.com',
+    version='0.2.dev0',
+    url='https://github.org/nejucomo/{}'.format(PKG),
+    license='TGPPLv1.0',
+    packages=find_packages(),
+)
