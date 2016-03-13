@@ -13,6 +13,30 @@ class Units (object):
             self._dimpowers = dimpowers
         # Else: this instance has already been initialized.
 
+    def __str__(self):
+        numer = []
+        denom = []
+
+        def append_power(l, n, p):
+            l.append(n if p == 1 else '{}^{}'.format(n, p))
+
+        for n, p in sorted(self._dimpowers.iteritems()):
+            if p > 0:
+                append_power(numer, n, p)
+            else:
+                append_power(denom, n, -p)
+
+        result = ' * '.join(numer) if numer else '1'
+        if denom:
+            dnr = ' * '.join(denom)
+            if len(denom) > 1:
+                dnr = '({})'.format(dnr)
+            result = '{} / {}'.format(result, dnr)
+        return result
+
+    def __repr__(self):
+        return '<{} {}>'.format(type(self).__name__, self)
+
     def __mul__(self, other):
         if isinstance(other, Units):
             newdp = {}

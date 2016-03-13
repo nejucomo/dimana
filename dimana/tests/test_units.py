@@ -73,3 +73,34 @@ class UnitsArithmeticOperationsTests (unittest.TestCase):
         for u in self.eqcases:
             for k in self.eqcases:
                 self.assertIs(u / k, u * (k ** -1))
+
+
+class UnitsParseAndStrTests (unittest.TestCase):
+    def setUp(self):
+        self.m = Units({'meter': 1})
+        self.s = Units({'sec': 1})
+
+    def test_str_and_repr(self):
+        m = self.m
+        s = self.s
+        kg = Units({'kg': 1})
+
+        cases = [
+            ('1', Units.scalar),
+            ('1 / sec^2', s**(-2)),
+            ('meter', m),
+            ('sec', s),
+            ('meter * sec', m*s),
+            ('meter / sec', m/s),
+            ('meter^2 * sec', m**2 * s),
+            ('meter / sec^2', m / s**2),
+            ('meter^2 / sec^2', m**2 / s**2),
+            ('kg^2 * meter / sec^2', kg**2 * m / s**2),
+            ('sec^2 / (kg * meter)', s**2 / (kg*m)),
+        ]
+
+        for exp, unit in cases:
+            self.assertEqual(exp, str(unit))
+
+            repexp = '<Units {}>'.format(exp)
+            self.assertEqual(repexp, repr(unit))
