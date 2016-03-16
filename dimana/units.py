@@ -3,6 +3,10 @@ import re
 
 class Units (object):
 
+    class Mismatch (TypeError):
+        """Represents binary operations on incompatible unit dimensions."""
+        pass
+
     class ParseError (ValueError):
         pass
 
@@ -85,6 +89,22 @@ class Units (object):
 
     def __repr__(self):
         return '<{} {!r}>'.format(type(self).__name__, str(self))
+
+    def __add__(self, other):
+        if self is other:
+            return self
+        elif isinstance(other, Units):
+            raise self.Mismatch(
+                'Units [{}] cannot be added to [{}]'
+                .format(self, other)
+            )
+        else:
+            raise TypeError('Expected Units, found {!r}'.format(other))
+
+    __sub__ = __add__
+
+    def __neg__(self):
+        return self
 
     def __mul__(self, other):
         if isinstance(other, Units):

@@ -30,6 +30,18 @@ class UnitsArithmeticOperationsTests (unittest.TestCase):
         # All equivalences are tested for each case here:
         self.eqcases = [Units.scalar, self.m, self.m * self.s, self.m / self.s]
 
+    def test__add__(self):
+        self.assertIs(self.m, self.m + self.m)
+
+    def test__add__Mismatch(self):
+        self.assertRaises(Units.Mismatch, lambda: self.m + self.s)
+
+    def test__add__TypeError(self):
+        self.assertRaises(TypeError, lambda: self.m + 'banana')
+
+    def test__inv__(self):
+        self.assertIs(self.m, -self.m)
+
     def test__mul__(self):
         self.assertIs(
             Units({'meter': 1, 'sec': 1}),
@@ -54,9 +66,13 @@ class UnitsArithmeticOperationsTests (unittest.TestCase):
             self.m ** 3,
         )
 
+    def test__sub__is__add__(self):
+        self.assertEqual(Units.__sub__, Units.__add__)
+
     def test__truediv__is__div__(self):
         self.assertEqual(Units.__truediv__, Units.__div__)
 
+    # Equivalences:
     def test_scalar_cancellation_equivalence(self):
         for u in self.eqcases:
             self.assertIs(Units.scalar, u / u)
