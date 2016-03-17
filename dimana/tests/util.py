@@ -1,3 +1,6 @@
+from dimana import exc
+
+
 def ParseTestClass(testcls):
     make_title = lambda s: repr(str(s).replace('.', '_'))
     cls = testcls.targetclass
@@ -43,5 +46,10 @@ def ParseTestClass(testcls):
                 badinput,
             )
         )
+
+    def test_ParseError_hierarchy(self):
+        self.assertTrue(issubclass(cls.ParseError, exc.ParseError))
+
+    testcls.test_ParseError_hierarchy = test_ParseError_hierarchy
 
     return testcls

@@ -1,5 +1,7 @@
 import re
 
+from dimana import exc
+
 
 class Units (object):
 
@@ -7,14 +9,14 @@ class Units (object):
         """Represents binary operations on incompatible unit dimensions."""
         pass
 
-    class ParseError (ValueError):
+    class ParseError (exc.ParseError):
         pass
 
     @classmethod
     def parse(cls, text):
         m = cls._rgx_frac.match(text)
         if m is None:
-            raise cls.ParseError('Could not parse Units: {!r}'.format(text))
+            raise cls.ParseError('Could not parse Units: {!r}', text)
 
         loopinfo = []
 
@@ -44,8 +46,9 @@ class Units (object):
 
                 except ValueError:
                     raise cls.ParseError(
-                        'Could not parse Units term: {!r} in {!r}'
-                        .format(term, text)
+                        'Could not parse Units term: {!r} in {!r}',
+                        term,
+                        text,
                     )
                 pow += dp.pop(uname, 0)
                 if pow != 0:

@@ -1,12 +1,13 @@
 import re
 from decimal import Decimal
+from dimana import exc
 from dimana.typecheck import typecheck
 from dimana.units import Units
 
 
 class Value (object):
 
-    class ParseError (ValueError):
+    class ParseError (exc.ParseError):
         pass
 
     @classmethod
