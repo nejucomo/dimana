@@ -24,7 +24,7 @@ def ParseTestClass(testcls):
             testcls,
             'test_parse_of {}'.format(title),
             lambda self: [
-                self.assertEqual(value, cls.parse(t))
+                self.assertParsedValueMatches(value, cls.parse(t))
                 for t
                 in texts
             ],

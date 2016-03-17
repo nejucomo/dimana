@@ -26,6 +26,12 @@ class ValueParseAndStringTests (unittest.TestCase):
 
     targetclass = Value
 
+    def assertParsedValueMatches(self, a, b):
+        # Do this to avoid exercising (==) for parser testing. We exercise
+        # (==) only in the arithmetic tests for more precise test
+        # coverage.
+        self.assertEqual(repr(a), repr(b))
+
     m = Units({'meter': 1})
     s = Units({'sec': 1})
     kg = Units({'kg': 1})

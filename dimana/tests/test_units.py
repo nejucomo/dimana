@@ -97,6 +97,9 @@ class UnitsParseAndStrTests (unittest.TestCase):
 
     targetclass = Units
 
+    def assertParsedValueMatches(self, a, b):
+        self.assertIs(a, b)
+
     m = Units({'meter': 1})
     s = Units({'sec': 1})
     kg = Units({'kg': 1})
