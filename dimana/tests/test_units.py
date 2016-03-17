@@ -2,6 +2,7 @@
 
 import unittest
 from dimana.units import Units
+from dimana.tests.util import ParseTestClass
 
 
 class UnitsValueTypeTests (unittest.TestCase):
@@ -91,88 +92,71 @@ class UnitsArithmeticOperationsTests (unittest.TestCase):
                 self.assertIs(u / k, u * (k ** -1))
 
 
+@ParseTestClass
 class UnitsParseAndStrTests (unittest.TestCase):
-    def setUp(self):
-        self.m = Units({'meter': 1})
-        self.s = Units({'sec': 1})
 
-    def test_str_repr_and_parse(self):
-        m = self.m
-        s = self.s
-        kg = Units({'kg': 1})
+    targetclass = Units
 
-        cases = [
-            (Units.scalar,
-             '1',
-             ['foo^0',
-              'x/x']),
+    m = Units({'meter': 1})
+    s = Units({'sec': 1})
+    kg = Units({'kg': 1})
 
-            (s**(-2),
-             '1 / sec^2',
-             ['1/sec^2',
-              'sec^-2',
-              '1/(sec*sec)',
-              '1/ ( sec  * sec )']),
+    cases = [
+        (Units.scalar,
+         '1',
+         ['foo^0',
+          'x/x']),
 
-            (m,
-             'meter',
-             []),
+        (s**(-2),
+         '1 / sec^2',
+         ['1/sec^2',
+          'sec^-2',
+          '1/(sec*sec)',
+          '1/ ( sec  * sec )']),
 
-            (s,
-             'sec',
-             []),
+        (m,
+         'meter',
+         []),
 
-            (m*s,
-             'meter * sec',
-             ['meter*sec',
-              '1/(meter^-1*sec^-1)']),
+        (s,
+         'sec',
+         []),
 
-            (m/s,
-             'meter / sec',
-             ['sec*meter / sec^2']),
+        (m*s,
+         'meter * sec',
+         ['meter*sec',
+          '1/(meter^-1*sec^-1)']),
 
-            (m**2 * s,
-             'meter^2 * sec',
-             ['meter*sec*meter']),
+        (m/s,
+         'meter / sec',
+         ['sec*meter / sec^2']),
 
-            (m / s**2,
-             'meter / sec^2',
-             []),
+        (m**2 * s,
+         'meter^2 * sec',
+         ['meter*sec*meter']),
 
-            (m**2 / s**2,
-             'meter^2 / sec^2',
-             []),
+        (m / s**2,
+         'meter / sec^2',
+         []),
 
-            (kg**2 * m / s**2,
-             'kg^2 * meter / sec^2',
-             []),
+        (m**2 / s**2,
+         'meter^2 / sec^2',
+         []),
 
-            (s**2 / (kg*m),
-             'sec^2 / (kg * meter)',
-             []),
-        ]
+        (kg**2 * m / s**2,
+         'kg^2 * meter / sec^2',
+         []),
 
-        for unit, text, alts in cases:
-            self.assertEqual(text, str(unit))
+        (s**2 / (kg*m),
+         'sec^2 / (kg * meter)',
+         []),
+    ]
 
-            repexp = '<Units {!r}>'.format(text)
-            self.assertEqual(repexp, repr(unit))
-
-            for t in [text] + alts:
-                self.assertIs(unit, Units.parse(t))
-
-    def test_parse_error_empty(self):
-        self.assertRaises(Units.ParseError, Units.parse, '')
-
-    def test_parse_error_noise(self):
-        self.assertRaises(Units.ParseError, Units.parse, '%^@')
-
-    def test_parse_error_noise_inside_term_pow_parse(self):
-        self.assertRaises(Units.ParseError, Units.parse, 'a^*b')
-
-    def test_parse_error_noise_inside_term_uname_parse(self):
-        self.assertRaises(Units.ParseError, Units.parse, 'a*^2')
-
-    def test_parse_error_leading_or_trailing_space(self):
-        self.assertRaises(Units.ParseError, Units.parse, ' meter')
-        self.assertRaises(Units.ParseError, Units.parse, 'meter ')
+    errorcases = [
+        '',
+        '%^@',
+        'a^*b',
+        'a*^2',
+        ' meter',
+        'meter ',
+    ]
