@@ -94,10 +94,14 @@ class ValueParseAndStringTests (unittest.TestCase):
     ]
 
     errorcases = [
+        # trigger top-level regex:
         '',
-        '%^@',
-        'a^*b',
-        'a*^2',
-        ' meter',
-        'meter ',
+        '42 meters',
+
+        # trigger invalid decimal:
+        'banana [meter / sec]',
+
+        # trigger Units.ParseError:
+        '13 []',
+        '1e3 [meter / sec^not-a-number]',
     ]
