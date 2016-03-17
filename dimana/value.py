@@ -1,5 +1,5 @@
 import re
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from dimana import exc
 from dimana.typecheck import typecheck
 from dimana.units import Units
@@ -14,9 +14,18 @@ class Value (object):
     def parse(cls, text):
         m = cls._rgx.match(text)
         if m is None:
-            raise cls.ParseError('Could not parse Value: {!r}'.format(text))
+            raise cls.ParseError('Could not parse Value: {!r}', text)
 
-        decimal = Decimal(m.group(1))
+        dectext = m.group(1)
+        try:
+            decimal = Decimal(dectext)
+        except InvalidOperation as e:
+            raise cls.ParseError(
+                'Could not parse decimal {!r} of Value: {}',
+                dectext,
+                e,
+            )
+
         units = Units.parse(m.group(2))
         return cls(decimal, units)
 
