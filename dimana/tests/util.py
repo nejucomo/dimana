@@ -36,8 +36,8 @@ def ParseTestClass(testcls):
     for badinput in testcls.errorcases:
         setattr(
             testcls,
-            'test_parse_error_of {!r}'.format(make_title(badinput)),
-            lambda self: self.assertRaises(
+            'test_parse_error_of {}'.format(make_title(badinput)),
+            lambda self, badinput=badinput: self.assertRaises(
                 cls.ParseError,
                 cls.parse,
                 badinput,

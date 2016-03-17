@@ -156,10 +156,19 @@ class UnitsParseAndStrTests (unittest.TestCase):
     ]
 
     errorcases = [
+        # These should trigger the top-level regex mismatch:
         '',
-        '%^@',
-        'a^*b',
-        'a*^2',
-        ' meter',
-        'meter ',
+        '%',  # Doesn't match character classes.
+        '1foo',  # Doesn't match initial character class.
+        ' meter',  # No initial whitespace.
+        'meter ',  # No trailing whitespace.
+
+        # This should trigger error on unpacking of term parts:
+        'a^b^c',
+
+        # This should trigger error on int parsing of power:
+        'a^b',
+
+        # This should trigger error on unit name parsing of term:
+        'a ^2',
     ]
