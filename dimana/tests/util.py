@@ -1,8 +1,9 @@
 def ParseTestClass(testcls):
+    make_title = lambda s: repr(str(s).replace('.', '_'))
     cls = testcls.targetclass
 
     def set_tests(value, text, alts):
-        title = repr(str(value))
+        title = make_title(value)
 
         # This exists merely to work around loop scoping issue.
         setattr(
@@ -35,7 +36,7 @@ def ParseTestClass(testcls):
     for badinput in testcls.errorcases:
         setattr(
             testcls,
-            'test_parse_error_of {!r}'.format(badinput),
+            'test_parse_error_of {!r}'.format(make_title(badinput)),
             lambda self: self.assertRaises(
                 cls.ParseError,
                 cls.parse,
