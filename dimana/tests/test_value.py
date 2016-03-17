@@ -21,6 +21,69 @@ class ValueConstructionTests (unittest.TestCase):
         self.assertRaises(TypeError, Value, 42, 'meter')
 
 
+class ValueArithmeticTests (unittest.TestCase):
+    def test__cmp__(self):
+        a = Value.parse('2 [meter / sec]')
+        b = Value.parse('2 [meter / sec]')
+        c = Value.parse('3 [meter / sec]')
+
+        self.assertEqual(0, cmp(a, b))
+        self.assertLess(0, cmp(c, a))
+        self.assertGreater(0, cmp(a, c))
+
+    def test__cmp__Mismatch(self):
+        a = Value.parse('2 [meter / sec]')
+        b = Value.parse('2 [kg]')
+        self.assertRaises(Units.Mismatch, cmp, a, b)
+
+    def test__cmp__TypeError(self):
+        a = Value.parse('2 [meter / sec]')
+        self.assertRaises(TypeError, cmp, a, 'banana')
+        self.assertRaises(TypeError, cmp, a, 42)
+        self.assertRaises(TypeError, cmp, a, D('42'))
+
+    def test__add__and__sub__ok(self):
+        a = Value.parse('2 [meter / sec]')
+        b = Value.parse('3 [meter / sec]')
+        c = Value.parse('5 [meter / sec]')
+        d = Value.parse('-1 [meter / sec]')
+        self.assertEqual(c, a+b)
+        self.assertEqual(d, a-b)
+
+    def test__add__and__sub__Mismatch(self):
+        a = Value.parse('2 [meter / sec]')
+        b = Value.parse('3 [kg]')
+        self.assertRaises(Units.Mismatch, Value.__add__, a, b)
+
+    def test__mul__and__div__(self):
+        a = Value.parse('3 [meter / sec]')
+        b = Value.parse('2 [kg]')
+        c = Value.parse('6 [kg * meter / sec]')
+        d = Value.parse('1.5 [meter / (kg * sec)]')
+        self.assertEqual(c, a*b)
+        self.assertEqual(d, a/b)
+
+    def test__pow__no_modulus_ok(self):
+        a = Value.parse('4 [meter / sec]')
+        b = Value.parse('16 [meter^2 / sec^2]')
+        self.assertEqual(b, a**2)
+
+    def test__pow__no_modulus_nonint_decimal_power_ok(self):
+        a = Value.parse('4 [meter / sec]')
+        b = Value.parse('8.0 [meter^1.5 / sec^1.5]')
+        self.assertEqual(b, a**D('1.5'))
+
+    def test__pow__TypeError_modulus(self):
+        a = Value.parse('3 [meter / sec]')
+        self.assertRaises(TypeError, pow, a, 2, 4)
+
+    def test__neg__and__pos__(self):
+        a = Value.parse('3 [meter / sec]')
+        b = Value.parse('-3 [meter / sec]')
+        self.assertIs(a, +a)
+        self.assertEqual(b, -a)
+
+
 @ParseTestClass
 class ValueParseAndStringTests (unittest.TestCase):
 

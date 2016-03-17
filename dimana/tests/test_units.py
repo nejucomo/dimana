@@ -153,6 +153,10 @@ class UnitsParseAndStrTests (unittest.TestCase):
         (s**2 / (kg*m),
          'sec^2 / (kg * meter)',
          []),
+
+        (s**1.5,
+         'sec^1.5',
+         []),
     ]
 
     errorcases = [

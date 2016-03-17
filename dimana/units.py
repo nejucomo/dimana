@@ -1,13 +1,15 @@
 import re
-
+from decimal import Decimal, InvalidOperation
 from dimana import exc
+from dimana.typecheck import typecheck
 
 
 class Units (object):
 
     class Mismatch (TypeError):
         """Represents binary operations on incompatible unit dimensions."""
-        pass
+        def __init__(self, tmpl, *a):
+            TypeError.__init__(self, tmpl.format(*a))
 
     class ParseError (exc.ParseError):
         pass
@@ -39,12 +41,12 @@ class Units (object):
                     parts.append('1')
                 try:
                     [uname, powtext] = parts
-                    pow = int(powtext) * inv
+                    pow = Decimal(powtext) * inv
 
                     if cls._rgx_uname.match(uname) is None:
                         raise ValueError()
 
-                except ValueError:
+                except (ValueError, InvalidOperation):
                     raise cls.ParseError(
                         'Could not parse Units term: {!r} in {!r}',
                         term,
@@ -69,6 +71,17 @@ class Units (object):
             self._dimpowers = dimpowers
         # Else: this instance has already been initialized.
 
+    # Custom Methods:
+    def match(self, other):
+        typecheck(other, Units)
+        if self is not other:
+            raise Units.Mismatch(
+                'Units mismatch: {!r} vs {!r}',
+                str(self),
+                str(other),
+            )
+
+    # str/repr Methods:
     def __str__(self):
         numer = []
         denom = []
@@ -93,16 +106,10 @@ class Units (object):
     def __repr__(self):
         return '<{} {!r}>'.format(type(self).__name__, str(self))
 
+    # Arithmethic Methods:
     def __add__(self, other):
-        if self is other:
-            return self
-        elif isinstance(other, Units):
-            raise self.Mismatch(
-                'Units [{}] cannot be added to [{}]'
-                .format(self, other)
-            )
-        else:
-            raise TypeError('Expected Units, found {!r}'.format(other))
+        self.match(other)
+        return self
 
     __sub__ = __add__
 
@@ -147,11 +154,11 @@ class Units (object):
         r'''
           ^(?P<numer>
             1
-            | [a-z]([a-z0-9_ *^-]*?[a-z0-9_])?
+            | [a-z]([a-z0-9_ *^.-]*?[a-z0-9_])?
           )(
             \ */\ *(?P<denom>
-              [a-z]([a-z0-9_ *^-]*?[a-z0-9_])?
-              | \([a-z0-9_ *^-]*?\)
+              [a-z]([a-z0-9_ *^.-]*?[a-z0-9_])?
+              | \([a-z0-9_ *^.-]*?\)
             )
           )?$
         ''',
