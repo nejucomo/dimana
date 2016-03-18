@@ -28,7 +28,7 @@ class Value (object):
         if m is None:
             raise cls.ParseError('Could not parse Value: {!r}', text)
 
-        dectext = m.group(1)
+        dectext = m.group('decimal')
         try:
             decimal = Decimal(dectext)
         except InvalidOperation as e:
@@ -38,7 +38,11 @@ class Value (object):
                 e,
             )
 
-        units = Units.parse(m.group(2))
+        unitext = m.group('units')
+        if unitext is None:
+            units = Units.scalar
+        else:
+            units = Units.parse(unitext)
         return cls(decimal, units)
 
     def __init__(self, decimal, units):
@@ -50,7 +54,10 @@ class Value (object):
 
     # str/repr Methods:
     def __str__(self):
-        return '{} [{}]'.format(self.decimal, self.units)
+        if self.units is Units.scalar:
+            return str(self.decimal)
+        else:
+            return '{} [{}]'.format(self.decimal, self.units)
 
     def __repr__(self):
         return '<{} {!r}>'.format(type(self).__name__, str(self))
@@ -88,4 +95,4 @@ class Value (object):
             raise TypeError('Modulus not supported for {!r}', self)
 
     # Private
-    _rgx = re.compile(r'^(\S+) +\[(.*?)\]$')
+    _rgx = re.compile(r'^(?P<decimal>\S+)( +\[(?P<units>.*?)\])?$')

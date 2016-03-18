@@ -106,8 +106,9 @@ class ValueParseAndStringTests (unittest.TestCase):
         for (units, text, alts)
         in [
             (Units.scalar,
-             '3.14 [1]',
-             ['3.14 [foo^0]',
+             '3.14',
+             ['3.14 [1]',
+              '3.14 [foo^0]',
               '3.14 [x/x]']),
 
             (s**(-2),
