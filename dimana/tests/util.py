@@ -2,7 +2,10 @@ from dimana import exc
 
 
 def ParseTestClass(testcls):
-    make_title = lambda s: repr(str(s).replace('.', '_'))
+
+    def make_title(s):
+        return repr(str(s).replace('.', '_'))
+
     cls = testcls.targetclass
 
     def set_tests(value, text, alts):
