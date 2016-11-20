@@ -96,3 +96,7 @@ class Value (object):
 
     # Private
     _rgx = re.compile(r'^(?P<decimal>\S+)( +\[(?P<units>.*?)\])?$')
+
+
+# UGLY HACK: work-around circular import issue:
+Units._Value = Value

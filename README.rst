@@ -97,6 +97,9 @@ instances. They are instances of ``dimana.units.Units``. You can parse
    >>> meter = Units.parse('meter')
    >>> meter
    <Units 'meter'>
+   >>> sec = Units.parse('sec')
+   >>> sec
+   <Units 'sec'>
 
 Construction
 ------------

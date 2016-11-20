@@ -81,6 +81,11 @@ class Units (object):
                 str(other),
             )
 
+    def from_string(self, s):
+        # Note: As a hack, Units._Value is set as a side-effect of
+        # dimana.value import to accomplish circular dependency. :-(
+        return Units._Value(Decimal(s), self)
+
     # str/repr Methods:
     def __str__(self):
         numer = []

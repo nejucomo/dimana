@@ -29,9 +29,10 @@ class UnitsValueConstructorTests (unittest.TestCase):
     def test_from_string(self):
         inputs = [
             '0',
+            '1',
+            '1.00',
             '+17e3',
             '-42.07000',
-            'NaN',
         ]
 
         unitses = [
