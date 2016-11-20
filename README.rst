@@ -8,13 +8,15 @@ For background see the `dimensional analysis wikipedia entry`_.
 
 .. _`dimensional analysis wikipedia entry`: https://en.wikipedia.org/wiki/Dimensional_analysis
 
-Examples
-========
+.. contents::
+
+A Tour of `dimana`
+==================
 
 Parsing
 -------
 
-Dimana values can be parsed with the ``Value.parse`` classmethod:
+`dimana` values can be parsed with the ``Value.parse`` classmethod:
 
 .. code:: python
 
@@ -90,7 +92,57 @@ through the same operations:
    >>> meter + meter
    <Units 'meter'>
 
-There is a single instance of ``Units`` for each combination of units:
+Value Constructor
+-----------------
+
+Aside from the ``Value.parse`` and ``Units.parse`` APIs, values can be
+constructed directly given a ``Decimal`` and ``Units``:
+
+.. code:: python
+
+   >>> from decimal import Decimal
+   >>> Value(Decimal('23.50'), meter)
+   <Value '23.50 [meter]'>
+
+Scalar Units
+------------
+
+The base case of units with 'no dimension' is available as
+``Units.scalar``. This instance of ``Units`` represents, for example,
+ratios:
+
+.. code:: python
+
+   >>> total = Value.parse('125 [meter]')
+   >>> current = Value.parse('15 [meter]')
+   >>> completion = current / total
+   >>> completion
+   <Value '0.12'>
+   >>> completion.units is Units.scalar
+   True
+
+By design, `dimana` does not do implicit coercion (such as promoting
+`float` or `Decimal` instances into `Value` instances) to help avoid
+numeric bugs:
+
+.. code:: python
+
+   >>> experience = Value.parse('42 [XP]')
+   >>> experience * 1.25
+   Traceback (most recent call last):
+     ...
+   TypeError: Expected 'Value', found 'float'
+
+Using ``Units.scalar`` is necessary in these cases. Parsing
+a value with no units specification gives a 'scalar value':
+
+   >>> experience * Value.parse('1.25')
+   <Value '52.50 [XP]'>
+
+Units Uniqueness and Matching
+-----------------------------
+
+There is a single instance of ``Units`` for each combination of unit:
 
 .. code:: python
 
@@ -118,9 +170,8 @@ if the units do not match:
      ...
    Mismatch: Units mismatch: 'meter' vs 'meter / sec'
 
-
-Units Uniqueness
-~~~~~~~~~~~~~~~~
+Uniqueness Implications
+~~~~~~~~~~~~~~~~~~~~~~~
 
 This uniqueness depends globally on the unit string names, so if a large
 application depended on two completely separate libraries, each of which
@@ -136,3 +187,15 @@ unit types.
 
 (The plan is to wait for real life applications that encounter these
 problems before adding complexity to this package.)
+
+
+Future Work
+===========
+
+There is no definite roadmap other than to adapt to existing users'
+needs. However, some potential new features would be:
+
+- Nicer
+- Add an 'expression evaluator' for quick-and-easy interactive interpreter
+  calculations, eg: ``dimana.eval``
+- Add a commandline wrapper around ``eval``.
