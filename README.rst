@@ -20,7 +20,7 @@ Parsing Values
 
 .. code:: python
 
-   >>> from dimana.value import Value
+   >>> from dimana import Value
    >>> reward = Value.parse('12.5 [BTC]')
    >>> reward
    <Value '12.5 [BTC]'>
@@ -93,7 +93,7 @@ instances. They are instances of ``dimana.units.Units``. You can parse
 
 .. code:: python
 
-   >>> from dimana.units import Units
+   >>> from dimana import Units
    >>> meter = Units.parse('meter')
    >>> meter
    <Units 'meter'>
@@ -134,8 +134,7 @@ explicit ``Units`` instances, for example:
 .. code:: python
 
    >>> from decimal import Decimal
-   >>> from dimana.value import Value
-   >>> from dimana.units import Units
+   >>> from dimana import Units, Value
    >>> cm = Units.parse('cm')
    >>> userinput = '163' # In an application this might be from arbitrary input.
    >>> height = Value(Decimal(userinput), cm)
@@ -147,7 +146,7 @@ an amount directly with the ``Units.from_string`` method:
 
 .. code:: python
 
-   >>> from dimana.units import Units
+   >>> from dimana import Units
    >>> cm = Units.parse('cm')
    >>> height2 = cm.from_string(userinput)
    >>> height == height2
