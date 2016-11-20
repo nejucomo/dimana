@@ -1,11 +1,13 @@
 #! /usr/bin/env python
 
 import unittest
+from decimal import Decimal
 from dimana.units import Units
+from dimana.value import Value
 from dimana.tests.util import ParseTestClass
 
 
-class UnitsValueTypeTests (unittest.TestCase):
+class UnitsUniquenessTests (unittest.TestCase):
     def test_value_type_construction(self):
         u1 = Units({})
         u2 = Units({})
@@ -21,6 +23,28 @@ class UnitsValueTypeTests (unittest.TestCase):
 
     def test_scalar(self):
         self.assertIs(Units.scalar, Units({}))
+
+
+class UnitsValueConstructorTests (unittest.TestCase):
+    def test_from_string(self):
+        inputs = [
+            '0',
+            '+17e3',
+            '-42.07000',
+            'NaN',
+        ]
+
+        unitses = [
+            Units.scalar,
+            Units.parse('GROM'),
+        ]
+
+        for units in unitses:
+            for i in inputs:
+                self.assertEqual(
+                    units.from_string(i),
+                    Value(Decimal(i), units),
+                )
 
 
 class UnitsArithmeticOperationsTests (unittest.TestCase):
