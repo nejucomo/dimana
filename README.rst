@@ -281,13 +281,59 @@ unit types.
 problems before adding complexity to this package.)
 
 
-Future Work
-===========
+Past, Present, and Future
+=========================
+
+Future
+------
 
 There is no definite roadmap other than to adapt to existing users'
 needs. However, some potential new features would be:
 
-- Nicer
+- Support for more numeric operations.
+- More streamlined interaction with ``decimal``, such as for rounding a
+  ``Value`` to a given precision.
 - Add an 'expression evaluator' for quick-and-easy interactive interpreter
   calculations, eg: ``dimana.eval``
 - Add a commandline wrapper around ``eval``.
+
+Changelog
+---------
+
+0.2.1
+~~~~~
+
+- Extended the README.rst to have a more complete overview, a future
+  roadmap, and this changelog.
+- Made several breaking API changes:
+
+  + Now toplevel ``dimana`` only publicly exposes ``Units`` and ``Value``.
+  + Introduced ``Units.from_string`` parser.
+  + Introduced ``zero`` and ``one`` properties of ``Units`` instances.
+  + Renamed the old ``Value.decimal`` attribute to ``Value.amount``.
+
+0.2.0
+~~~~~
+
+- Added code examples in README.rst and hooked doctests of that
+  documentation into the unittest suite.
+- Pivoted the API to the separation between ``Value`` and ``Units``
+  with the two ``parse`` methods.
+- Strict requirement of ``Decimal`` instances without implicit coercion.
+
+Before 0.2.0
+~~~~~~~~~~~~
+
+The 0.1 line of `dimana` had a very different interface based on a
+single `Dimana` class, and a more rudimentary parser, and was generally
+a messier proof-of-concept.
+
+There was no representation of the modern ``Units`` instances, rather
+only the equivalent of ``Value`` instances.
+
+It used dynamic type generation for what is not each instance of
+``Units``.
+
+It had less obvious error messages and less complete unit testing.
+
+It had no documentation and no doctests.
