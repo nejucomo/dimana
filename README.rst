@@ -230,7 +230,7 @@ a value with no units specification gives a 'scalar value':
    <Value '52.50 [XP]'>
 
 Units Uniqueness and Matching
------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 There is a single instance of ``Units`` for each combination of unit:
 
@@ -263,7 +263,7 @@ if the units do not match:
    Mismatch: Units mismatch: 'meter' vs 'meter / sec'
 
 Uniqueness Implications
-~~~~~~~~~~~~~~~~~~~~~~~
++++++++++++++++++++++++
 
 This uniqueness depends globally on the unit string names, so if a large
 application depended on two completely separate libraries, each of which
