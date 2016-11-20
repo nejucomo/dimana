@@ -290,6 +290,7 @@ Future
 There is no definite roadmap other than to adapt to existing users'
 needs. However, some potential new features would be:
 
+- Python 3 support with an identical API.
 - Support for more numeric operations.
 - More streamlined interaction with ``decimal``, such as for rounding a
   ``Value`` to a given precision.
