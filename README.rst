@@ -333,12 +333,9 @@ The 0.1 line of `dimana` had a very different interface based on a
 single `Dimana` class, and a more rudimentary parser, and was generally
 a messier proof-of-concept.
 
-There was no representation of the modern ``Units`` instances, rather
-only the equivalent of ``Value`` instances.
-
-It used dynamic type generation for what is not each instance of
-``Units``.
-
-It had less obvious error messages and less complete unit testing.
-
-It had no documentation and no doctests.
+- There was no representation of the modern ``Units`` instances, rather
+  only the equivalent of ``Value`` instances.
+- It used dynamic type generation for what is now each instance of
+  ``Units``.
+- It had less obvious error messages and less complete unit testing.
+- It had no documentation and no doctests.
