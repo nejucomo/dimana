@@ -90,8 +90,8 @@ Units
 ~~~~~
 
 Units are available in the ``units`` attribute of ``Value``
-instances. They are instances of ``dimana.units.Units``. You can parse
-``Units`` instances directly:
+instances. They are instances of ``dimana.Units``. You can parse ``Units``
+instances directly:
 
 .. code:: python
 
