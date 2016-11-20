@@ -52,6 +52,8 @@ Value Components
 A value associates a `scalar amount` with `dimensional units`. These
 are available on the instance as ``amount`` and ``units``:
 
+.. code:: python
+
    >>> rate.amount
    Decimal('1.25')
    >>> rate.units
@@ -147,6 +149,8 @@ numeric bugs:
 
 Using ``Units.scalar`` is necessary in these cases. Parsing
 a value with no units specification gives a 'scalar value':
+
+.. code:: python
 
    >>> experience * Value.parse('1.25')
    <Value '52.50 [XP]'>
