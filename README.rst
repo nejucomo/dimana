@@ -13,8 +13,8 @@ For background see the `dimensional analysis wikipedia entry`_.
 A Tour of `dimana`
 ==================
 
-Parsing
--------
+Parsing Values
+--------------
 
 `dimana` values can be parsed with the ``Value.parse`` classmethod:
 
