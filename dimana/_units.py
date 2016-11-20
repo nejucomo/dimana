@@ -67,9 +67,26 @@ class Units (object):
         return inst
 
     def __init__(self, dimpowers):
-        if not hasattr(self, '_dimpowers'):
-            self._dimpowers = dimpowers
-        # Else: this instance has already been initialized.
+        if hasattr(self, '_dimpowers'):
+            # The singleton has already been initialized:
+            return
+
+        self._dimpowers = dimpowers
+        self._zero = None
+        self._one = None
+
+    # Properties:
+    @property
+    def zero(self):
+        if self._zero is None:
+            self._zero = Units._Value(Decimal(0), self)
+        return self._zero
+
+    @property
+    def one(self):
+        if self._one is None:
+            self._one = Units._Value(Decimal(1), self)
+        return self._one
 
     # Custom Methods:
     def match(self, other):

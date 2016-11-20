@@ -26,6 +26,21 @@ class UnitsUniquenessTests (unittest.TestCase):
 
 
 class UnitsValueConstructorTests (unittest.TestCase):
+    def test_zero_and_one(self):
+        unitses = [
+            Units.scalar,
+            Units.parse('GROM'),
+        ]
+
+        for u in unitses:
+            self.assertIsInstance(u.zero, Value)
+            self.assertIsInstance(u.one, Value)
+            self.assertEqual(Decimal('0'), u.zero.amount)
+            self.assertEqual(Decimal('1'), u.one.amount)
+            self.assertEqual(Units.scalar.one, u.one / u.one)
+            self.assertEqual(u.zero, u.one * Units.scalar.zero)
+            self.assertIs(u**2, (u.zero * u.one).units)
+
     def test_from_string(self):
         inputs = [
             '0',

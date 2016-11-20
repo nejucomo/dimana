@@ -179,6 +179,19 @@ More About Units
 
 This section explores the ``Units`` class more closely.
 
+``zero`` and ``one``
+~~~~~~~~~~~~~~~~~~~~
+
+Because the 0 and 1 amounts are very common, they are available as
+attributes of a ``Units`` instance:
+
+.. code:: python
+
+   >>> meter.zero
+   <Value '0 [meter]'>
+   >>> sec.one
+   <Value '1 [sec]'>
+
 Scalar Units
 ~~~~~~~~~~~~
 
