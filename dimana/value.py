@@ -49,15 +49,15 @@ class Value (object):
         typecheck(decimal, Decimal)
         typecheck(units, Units)
 
-        self.decimal = decimal
+        self.amount = decimal
         self.units = units
 
     # str/repr Methods:
     def __str__(self):
         if self.units is Units.scalar:
-            return str(self.decimal)
+            return str(self.amount)
         else:
-            return '{} [{}]'.format(self.decimal, self.units)
+            return '{} [{}]'.format(self.amount, self.units)
 
     def __repr__(self):
         return '<{} {!r}>'.format(type(self).__name__, str(self))
@@ -65,32 +65,32 @@ class Value (object):
     # Arithmetic Methods:
     @units_must_match
     def __cmp__(self, other):
-        return cmp(self.decimal, other.decimal)
+        return cmp(self.amount, other.amount)
 
     def __pos__(self):
         return self
 
     def __neg__(self):
-        return Value(-self.decimal, self.units)
+        return Value(-self.amount, self.units)
 
     @units_must_match
     def __add__(self, other):
-        return Value(self.decimal + other.decimal, self.units)
+        return Value(self.amount + other.amount, self.units)
 
     def __sub__(self, other):
         return self + (-other)
 
     def __mul__(self, other):
         typecheck(other, Value)
-        return Value(self.decimal * other.decimal, self.units * other.units)
+        return Value(self.amount * other.amount, self.units * other.units)
 
     def __div__(self, other):
         typecheck(other, Value)
-        return Value(self.decimal / other.decimal, self.units / other.units)
+        return Value(self.amount / other.amount, self.units / other.units)
 
     def __pow__(self, other, modulus=None):
         if modulus is None:
-            return Value(self.decimal ** other, self.units ** other)
+            return Value(self.amount ** other, self.units ** other)
         else:
             raise TypeError('Modulus not supported for {!r}', self)
 

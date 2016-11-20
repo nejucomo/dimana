@@ -33,7 +33,8 @@ Values track their units through arithmetic operations:
 .. code:: python
 
    >>> time = Value.parse('10 [min]')
-   >>> reward / time
+   >>> rate = reward / time
+   >>> rate
    <Value '1.25 [BTC / min]'>
 
 Incoherent operations raise exceptions:
@@ -45,19 +46,29 @@ Incoherent operations raise exceptions:
      ...
    Mismatch: Units mismatch: 'BTC' vs 'min'
 
-Scalars
--------
+Value Components
+----------------
 
-A value associates a scalar amount with dimensional units. The scalar
-amount of a value is represented with ``decimal.Decimal`` instance on the
-``v.decimal`` attribute:
+A value associates a `scalar amount` with `dimensional units`. These
+are available on the instance as ``amount`` and ``units``:
+
+   >>> rate.amount
+   Decimal('1.25')
+   >>> rate.units
+   <Units 'BTC / min'>
+
+Amounts
+~~~~~~~
+
+The scalar amount of a value is represented with ``decimal.Decimal``
+instance on the ``amount`` attribute:
 
 .. code:: python
 
-   >>> reward.decimal
+   >>> reward.amount
    Decimal('12.5')
 
-Arithmetic operations rely on the decimal library for numeric logic,
+Arithmetic operations rely on the `decimal` library for numeric logic,
 including precision tracking:
 
 .. code:: python
@@ -66,9 +77,10 @@ including precision tracking:
    <Value '8913.4750000 [USD]'>
 
 Units
------
+~~~~~
 
-Units are tracked with instances of ``dimana.units.Units``. You can parse
+Units are available in the ``units`` attribute of ``Value``
+instances. They are instances of ``dimana.units.Units``. You can parse
 ``Units`` instances directly:
 
 .. code:: python
@@ -93,7 +105,7 @@ through the same operations:
    <Units 'meter'>
 
 Value Constructor
------------------
+~~~~~~~~~~~~~~~~~
 
 Aside from the ``Value.parse`` and ``Units.parse`` APIs, values can be
 constructed directly given a ``Decimal`` and ``Units``:

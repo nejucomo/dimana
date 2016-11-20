@@ -12,7 +12,7 @@ class ValueConstructionTests (unittest.TestCase):
     def test_construction_and_properties(self):
         v = Value(D('42'), self.meter)
         self.assertIs(self.meter, v.units)
-        self.assertEqual(D('42'), v.decimal)
+        self.assertEqual(D('42'), v.amount)
 
     def test_construction_type_error_non_decimal(self):
         self.assertRaises(TypeError, Value, 42, self.meter)
