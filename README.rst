@@ -25,6 +25,12 @@ Parsing Values
    >>> reward
    <Value '12.5 [BTC]'>
 
+The grammar for units can handle powers expressed with the ``^`` symbol,
+and a single division with the ``/`` symbol:
+
+   >>> Value.parse('9.807 [meter/sec^2]')
+   <Value '9.807 [meter / sec^2]'>
+
 Arithmetic Operations
 ---------------------
 
@@ -88,29 +94,26 @@ instances. They are instances of ``dimana.units.Units``. You can parse
 .. code:: python
 
    >>> from dimana.units import Units
-   >>> Units.parse('meter')
-   <Units 'meter'>
-
-Units instances support arithmetic operations, just as values. The
-results are the same units you would get if the associated valued went
-through the same operations:
-
-.. code:: python
-
    >>> meter = Units.parse('meter')
-   >>> sec = Units.parse('sec')
-   >>> meter / sec
-   <Units 'meter / sec'>
-   >>> meter * sec**2
-   <Units 'meter * sec^2'>
-   >>> meter + meter
+   >>> meter
    <Units 'meter'>
+
+Construction
+------------
+
+There are four ways to create values:
+
+* parsing a 'value text': ``Value.parse``,
+* as the result of arithmetic operations on other values,
+* explicitly with the ``Value`` constructor, or
+* with 'units-specific parsing`.
+
+The first two are described above, the last two next:
 
 Value Constructor
 ~~~~~~~~~~~~~~~~~
 
-Aside from the ``Value.parse`` and ``Units.parse`` APIs, values can be
-constructed directly given a ``Decimal`` and ``Units``:
+Values can be constructed directly given ``Decimal`` and ``Units`` instances:
 
 .. code:: python
 
@@ -118,8 +121,64 @@ constructed directly given a ``Decimal`` and ``Units``:
    >>> Value(Decimal('23.50'), meter)
    <Value '23.50 [meter]'>
 
+Units-Specific Parsing
+~~~~~~~~~~~~~~~~~~~~~~
+
+Many applications require a finite statically known set of ``Units``
+instances, and then need to create ``Value`` instances from specific
+explicit ``Units`` instances, for example:
+
+.. code:: python
+
+   >>> from decimal import Decimal
+   >>> from dimana.value import Value
+   >>> from dimana.units import Units
+   >>> cm = Units.parse('cm')
+   >>> userinput = '163' # In an application this might be from arbitrary input.
+   >>> height = Value(Decimal(userinput), cm)
+   >>> height
+   <Value '163 [cm]'>
+
+Because this pattern is so common, ``Units`` instances support parsing
+an amount directly with the ``Units.from_string`` method:
+
+.. code:: python
+
+   >>> from dimana.units import Units
+   >>> cm = Units.parse('cm')
+   >>> height2 = cm.from_string(userinput)
+   >>> height == height2
+   True
+
+str() and repr()
+----------------
+
+The ``str()``\ -ification of ``Value`` and ``Units`` instances matches the
+'canonical parsing format':
+
+.. code:: python
+
+   >>> trolls = Value.parse('3 [troll]')
+   >>> print trolls
+   3 [troll]
+   >>> trolls == Value.parse(str(trolls))
+   True
+
+The ``repr()`` of these class instances contains the class name and the
+``str()``\ -ification:
+
+   >>> print repr(trolls)
+   <Value '3 [troll]'>
+   >>> print repr(trolls.units)
+   <Units 'troll'>
+
+More About Units
+----------------
+
+This section explores the ``Units`` class more closely.
+
 Scalar Units
-------------
+~~~~~~~~~~~~
 
 The base case of units with 'no dimension' is available as
 ``Units.scalar``. This instance of ``Units`` represents, for example,
@@ -162,8 +221,10 @@ There is a single instance of ``Units`` for each combination of unit:
 
 .. code:: python
 
-   >>> assert (meter + meter) is meter
-   >>> assert (meter / sec) is Units.parse('meter / sec')
+   >>> (meter + meter) is meter
+   True
+   >>> (meter / sec) is Units.parse('meter / sec')
+   True
 
 Thus, to test if two ``Units`` instances represent the same units,
 just use the ``is`` operator:
