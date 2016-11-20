@@ -28,6 +28,8 @@ Parsing Values
 The grammar for units can handle powers expressed with the ``^`` symbol,
 and a single division with the ``/`` symbol:
 
+.. code:: python
+
    >>> Value.parse('9.807 [meter/sec^2]')
    <Value '9.807 [meter / sec^2]'>
 
@@ -168,6 +170,8 @@ The ``str()``\ -ification of ``Value`` and ``Units`` instances matches the
 
 The ``repr()`` of these class instances contains the class name and the
 ``str()``\ -ification:
+
+.. code:: python
 
    >>> print repr(trolls)
    <Value '3 [troll]'>
