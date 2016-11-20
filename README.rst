@@ -85,7 +85,7 @@ through the same operations:
    >>> sec = Units.parse('sec')
    >>> meter / sec
    <Units 'meter / sec'>
-   >>> meter * sec^2
+   >>> meter * sec**2
    <Units 'meter * sec^2'>
    >>> meter + meter
    <Units 'meter'>
