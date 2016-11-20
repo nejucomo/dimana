@@ -1,7 +1,7 @@
 import re
 from decimal import Decimal, InvalidOperation
-from dimana import exc
-from dimana.typecheck import typecheck
+from dimana import _exc
+from dimana._typecheck import typecheck
 
 
 class Units (object):
@@ -11,7 +11,7 @@ class Units (object):
         def __init__(self, tmpl, *a):
             TypeError.__init__(self, tmpl.format(*a))
 
-    class ParseError (exc.ParseError):
+    class ParseError (_exc.ParseError):
         pass
 
     @classmethod

@@ -9,7 +9,7 @@ setup(
     description='Dimensional Analysis - arithmetic with measurement units.',
     author='Nathan Wilcox',
     author_email='nejucomo@gmail.com',
-    version='0.2.1.dev0',
+    version='0.2.1.dev1',
     url='https://github.org/nejucomo/{}'.format(PKG),
     license='TGPPLv1.0',
     packages=find_packages(),

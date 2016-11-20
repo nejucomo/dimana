@@ -1,9 +1,9 @@
 import re
 from functools import wraps
 from decimal import Decimal, InvalidOperation
-from dimana import exc
-from dimana.typecheck import typecheck
-from dimana.units import Units
+from dimana import _exc
+from dimana._typecheck import typecheck
+from dimana._units import Units
 
 
 # Private Units-matching decorator:
@@ -19,7 +19,7 @@ def units_must_match(method):
 
 class Value (object):
 
-    class ParseError (exc.ParseError):
+    class ParseError (_exc.ParseError):
         pass
 
     @classmethod

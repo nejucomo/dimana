@@ -1,7 +1,7 @@
 import unittest
 from decimal import Decimal as D
-from dimana.units import Units
-from dimana.value import Value
+from dimana._units import Units
+from dimana._value import Value
 from dimana.tests.util import ParseTestClass
 
 

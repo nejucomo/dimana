@@ -1,5 +1,5 @@
 import unittest
-from dimana.typecheck import typecheck
+from dimana._typecheck import typecheck
 
 
 class typecheckTests (unittest.TestCase):
