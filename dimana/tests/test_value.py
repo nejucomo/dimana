@@ -1,13 +1,13 @@
 import unittest
 from decimal import Decimal as D
-from dimana._units import Units, UnitsMismatch, Scalar, parse_units
+from dimana._units import Units, UnitsMismatch, Scalar
 from dimana._value import Value, ValueParseError, parse_value
 from dimana.tests.util import ParseTestClass
 
 
 class ValueConstructionTests (unittest.TestCase):
     def setUp(self):
-        self.meter = parse_units('meter')
+        self.meter = Units('meter')
 
     def test_construction_and_properties(self):
         v = Value(D('42'), self.meter)

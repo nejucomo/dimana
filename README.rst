@@ -95,11 +95,11 @@ instances directly:
 
 .. code:: python
 
-   >>> from dimana import parse_units
-   >>> meter = parse_units('meter')
+   >>> from dimana import Units
+   >>> meter = Units('meter')
    >>> meter
    <Units 'meter'>
-   >>> sec = parse_units('sec')
+   >>> sec = Units('sec')
    >>> sec
    <Units 'sec'>
 
@@ -137,8 +137,8 @@ explicit ``Units`` instances, for example:
 .. code:: python
 
    >>> from decimal import Decimal
-   >>> from dimana import Value, parse_units
-   >>> cm = parse_units('cm')
+   >>> from dimana import Value, Units
+   >>> cm = Units('cm')
    >>> userinput = '163' # In an application this might be from arbitrary input.
    >>> height = Value(Decimal(userinput), cm)
    >>> height
@@ -149,8 +149,8 @@ an amount directly with the ``Units.from_string`` method:
 
 .. code:: python
 
-   >>> from dimana import parse_units
-   >>> cm = parse_units('cm')
+   >>> from dimana import Units
+   >>> cm = Units('cm')
    >>> height2 = cm.from_string(userinput)
    >>> height == height2
    True
@@ -244,7 +244,7 @@ There is a single instance of ``Units`` for each combination of unit:
 
    >>> (meter + meter) is meter
    True
-   >>> (meter / sec) is parse_units('meter / sec')
+   >>> (meter / sec) is Units('meter / sec')
    True
 
 Thus, to test if two ``Units`` instances represent the same units,
@@ -252,7 +252,7 @@ just use the ``is`` operator:
 
 .. code:: python
 
-   >>> if meter is (parse_units('meter / sec') * sec):
+   >>> if meter is (Units('meter / sec') * sec):
    ...     print 'Yes, it is meters.'
    ...
    Yes, it is meters.
@@ -262,8 +262,8 @@ if the units do not match:
 
 .. code:: python
 
-   >>> meter.match(parse_units('meter / sec') * sec)
-   >>> meter.match(parse_units('meter / sec^2') * sec)
+   >>> meter.match(Units('meter / sec') * sec)
+   >>> meter.match(Units('meter / sec^2') * sec)
    Traceback (most recent call last):
      ...
    UnitsMismatch: 'meter' does not match 'meter / sec'

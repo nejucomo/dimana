@@ -5,22 +5,20 @@ from dimana._typecheck import typecheck
 
 
 class Units (object):
-    def __new__(cls, dimpowers):
+    def __new__(cls, spec):
+        dimpowers = spec if type(spec) is dict else _parse_units(spec)
         dpkey = tuple(sorted(dimpowers.iteritems()))
         inst = cls._instances.get(dpkey)
         if inst is None:
             inst = super(Units, cls).__new__(cls, dimpowers)
+            inst._dimpowers = dimpowers
+            inst._zero = None
+            inst._one = None
             cls._instances[dpkey] = inst
         return inst
 
     def __init__(self, dimpowers):
-        if hasattr(self, '_dimpowers'):
-            # The singleton has already been initialized:
-            return
-
-        self._dimpowers = dimpowers
-        self._zero = None
-        self._one = None
+        pass
 
     # Properties:
     @property
@@ -121,7 +119,8 @@ class Units (object):
 Scalar = Units({})
 
 
-def parse_units(text):
+# Private:
+def _parse_units(text):
     m = _rgx_frac.match(text)
     if m is None:
         raise UnitsParseError('Could not parse Units: {!r}', text)
@@ -162,10 +161,9 @@ def parse_units(text):
             if pow != 0:
                 dp[uname] = pow
 
-    return Units(dp)
+    return dp
 
 
-# Private:
 _rgx_frac = re.compile(
     r'''
       ^(?P<numer>
@@ -180,6 +178,7 @@ _rgx_frac = re.compile(
     ''',
     re.IGNORECASE | re.VERBOSE,
 )
+
 
 _rgx_uname = re.compile(
     r'^[a-z][a-z0-9_]*$',

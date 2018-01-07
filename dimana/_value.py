@@ -3,7 +3,7 @@ from functools import wraps
 from decimal import Decimal, InvalidOperation
 from dimana.exceptions import ValueParseError
 from dimana._typecheck import typecheck
-from dimana._units import Units, Scalar, parse_units
+from dimana._units import Units, Scalar
 
 
 # Private Units-matching decorator:
@@ -91,7 +91,7 @@ def parse_value(text):
     if unitext is None:
         units = Scalar
     else:
-        units = parse_units(unitext)
+        units = Units(unitext)
     return Value(decimal, units)
 
 

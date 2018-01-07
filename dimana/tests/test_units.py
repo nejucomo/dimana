@@ -2,12 +2,12 @@
 
 import unittest
 from decimal import Decimal
+from dimana import _units
 from dimana._units import \
     Scalar, \
     Units, \
     UnitsMismatch, \
-    UnitsParseError, \
-    parse_units
+    UnitsParseError
 from dimana._value import Value
 from dimana.tests.util import ParseTestClass
 
@@ -34,7 +34,7 @@ class UnitsValueConstructorTests (unittest.TestCase):
     def test_zero_and_one(self):
         unitses = [
             Scalar,
-            parse_units('GROM'),
+            Units('GROM'),
         ]
 
         for u in unitses:
@@ -57,7 +57,7 @@ class UnitsValueConstructorTests (unittest.TestCase):
 
         unitses = [
             Scalar,
-            parse_units('GROM'),
+            Units('GROM'),
         ]
 
         for units in unitses:
@@ -137,7 +137,7 @@ class UnitsArithmeticOperationsTests (unittest.TestCase):
                 self.assertIs(u / k, u * (k ** -1))
 
 
-@ParseTestClass(Units, parse_units, UnitsParseError)
+@ParseTestClass(Units, Units, UnitsParseError)
 class UnitsParseAndStrTests (unittest.TestCase):
 
     def assertParsedValueMatches(self, a, b):
@@ -230,6 +230,9 @@ class UnitsDeprecatedAPITests (unittest.TestCase):
 
     def test_no_parse(self):
         self.assertFalse(hasattr(Units, 'parse'))
+
+    def test_no_mod_parse(self):
+        self.assertFalse(hasattr(_units, 'parse_units'))
 
     def test_no_scalar(self):
         self.assertFalse(hasattr(Units, 'scalar'))
