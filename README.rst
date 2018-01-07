@@ -16,7 +16,7 @@ A Tour of `dimana`
 Parsing Values
 --------------
 
-`dimana` values can be parsed with the ``Value`` classmethod:
+`dimana` values can be parsed with the ``Value`` constructor:
 
 .. code:: python
 
@@ -78,7 +78,7 @@ instance on the ``amount`` attribute:
    >>> reward.amount
    Decimal('12.5')
 
-Arithmetic operations rely on the `decimal` library for numeric logic,
+Arithmetic operations rely on the `decimal` library for arithmetic logic,
 including precision tracking:
 
 .. code:: python
@@ -103,22 +103,22 @@ instances directly:
    >>> sec
    <Units 'sec'>
 
-Construction
-------------
+Constructing Values
+-------------------
 
 There are four ways to create values:
 
-* parsing a 'value text': ``Value``,
+* parsing a 'value text' with the constructor: ``Value``,
 * as the result of arithmetic operations on other values,
-* explicitly with the ``Value`` constructor, or
-* with 'units-specific parsing`.
+* with the `explicit constructor`,
+* by calling a ``Units`` instance.
 
 The first two are described above, the last two next:
 
-Value Constructor
-~~~~~~~~~~~~~~~~~
+Explicit Value Constructor
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Values can be constructed directly given ``Decimal`` and ``Units`` instances:
+Values can be constructed explicitly directly given ``Decimal`` and ``Units`` instances:
 
 .. code:: python
 
@@ -127,31 +127,40 @@ Values can be constructed directly given ``Decimal`` and ``Units`` instances:
    >>> Value(Decimal('23.50'), meter)
    <Value '23.50 [meter]'>
 
-Units-Specific Parsing
-~~~~~~~~~~~~~~~~~~~~~~
+Note that this constructor is strict about types and the first argument *must* be a ``decimal.Decimal``:
+
+   >>> Value(7, meter)
+   Traceback (most recent call last):
+     ...
+   TypeError: Expected 'Decimal', found 'int'
+
+Calling Units
+~~~~~~~~~~~~~
 
 Many applications require a finite statically known set of ``Units``
 instances, and then need to create ``Value`` instances from specific
-explicit ``Units`` instances, for example:
+explicit ``Units`` instances. This is more specific (thus safer) when
+the units are already known than calling the ``Value`` constructor which
+returns a value with arbitrary units.
+
+For example:
 
 .. code:: python
 
    >>> from decimal import Decimal
    >>> from dimana import Value, Units
-   >>> cm = Units('cm')
+   >>> METER = Units('METER')
    >>> userinput = '163' # In an application this might be from arbitrary input.
-   >>> height = Value(Decimal(userinput), cm)
+   >>> height = Value(Decimal(userinput), METER)
    >>> height
-   <Value '163 [cm]'>
+   <Value '163 [METER]'>
 
 Because this pattern is so common, ``Units`` instances support parsing
-an amount directly with the ``Units.from_string`` method:
+an amount directly by calling ``Units`` instances:
 
 .. code:: python
 
-   >>> from dimana import Units
-   >>> cm = Units('cm')
-   >>> height2 = cm.from_string(userinput)
+   >>> height2 = METER.from_string(userinput)  # FIXME remove `from_string`
    >>> height == height2
    True
 
@@ -215,9 +224,15 @@ ratios:
    >>> completion.units is Scalar
    True
 
-By design, `dimana` does not do implicit coercion (such as promoting
-`float` or `Decimal` instances into `Value` instances) to help avoid
-numeric bugs:
+Parsing a value which does not specify units produces a scalar value:
+
+.. code:: python
+
+   >>> completion == Value('0.12')
+   True
+
+By design, `dimana` does not do implicit coercion of `float` instances
+into `Value` instances to help avoid numeric bugs:
 
 .. code:: python
 
@@ -275,8 +290,8 @@ This uniqueness depends globally on the unit string names, so if a large
 application depended on two completely separate libraries, each of which
 rely on `dimana`, and both libraries define ``<Units 's'>`` they will
 be using the same instance. This could be a problem if, for example,
-one library uses the ``s`` to represent `seconds` while the other uses
-it to represent a `satisfaction point` rating system.
+one library uses the ``S`` to represent `seconds` while the other uses
+it to represent `Siemens <https://en.wikipedia.org/wiki/Siemens_(unit)>`_.
 
 Each instance of ``Units`` persists to the end of the process, so
 instantiating ``Units`` dynamically could present a resource management
@@ -306,6 +321,12 @@ needs. However, some potential new features would be:
 
 Changelog
 ---------
+
+0.3
+~~~
+
+- Removed old class-scoped APIs, such as `parse` methods, in favor of
+  using constructors directly.
 
 0.2.1
 ~~~~~
