@@ -39,11 +39,7 @@ class Units (object):
     def match(self, other):
         typecheck(other, Units)
         if self is not other:
-            raise UnitsMismatch(
-                'Units mismatch: {!r} vs {!r}',
-                str(self),
-                str(other),
-            )
+            raise UnitsMismatch(self, other)
 
     def from_string(self, s):
         # Note: As a hack, Units._Value is set as a side-effect of

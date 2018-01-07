@@ -1,7 +1,10 @@
 class UnitsMismatch (TypeError):
     """Represents binary operations on incompatible unit dimensions."""
-    def __init__(self, tmpl, *a):
-        TypeError.__init__(self, tmpl.format(*a))
+    def __init__(self, left, right):
+        TypeError.__init__(
+            self,
+            '{!r} does not match {!r}'.format(str(left), str(right)),
+        )
 
 
 class BaseParseError (ValueError):

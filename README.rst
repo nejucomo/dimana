@@ -52,7 +52,7 @@ Incoherent operations raise exceptions:
    >>> reward + time
    Traceback (most recent call last):
      ...
-   UnitsMismatch: Units mismatch: 'BTC' vs 'min'
+   UnitsMismatch: 'BTC' does not match 'min'
 
 Value Components
 ----------------
@@ -266,7 +266,7 @@ if the units do not match:
    >>> meter.match(parse_units('meter / sec^2') * sec)
    Traceback (most recent call last):
      ...
-   UnitsMismatch: Units mismatch: 'meter' vs 'meter / sec'
+   UnitsMismatch: 'meter' does not match 'meter / sec'
 
 Uniqueness Implications
 +++++++++++++++++++++++
