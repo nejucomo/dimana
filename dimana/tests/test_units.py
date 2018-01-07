@@ -46,13 +46,17 @@ class UnitsValueConstructorTests (unittest.TestCase):
             self.assertEqual(u.zero, u.one * Scalar.zero)
             self.assertIs(u**2, (u.zero * u.one).units)
 
-    def test_from_string(self):
+    def test_maker(self):
         inputs = [
             '0',
             '1',
             '1.00',
             '+17e3',
             '-42.07000',
+            0,
+            1,
+            0x7L,
+            42.3,
         ]
 
         unitses = [
@@ -63,7 +67,7 @@ class UnitsValueConstructorTests (unittest.TestCase):
         for units in unitses:
             for i in inputs:
                 self.assertEqual(
-                    units.from_string(i),
+                    units(i),
                     Value(Decimal(i), units),
                 )
 

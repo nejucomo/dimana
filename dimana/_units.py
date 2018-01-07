@@ -39,7 +39,7 @@ class Units (object):
         if self is not other:
             raise UnitsMismatch(self, other)
 
-    def from_string(self, s):
+    def __call__(self, s):
         # Note: As a hack, Units._Value is set as a side-effect of
         # dimana.value import to accomplish circular dependency. :-(
         return Units._Value(Decimal(s), self)

@@ -160,7 +160,7 @@ an amount directly by calling ``Units`` instances:
 
 .. code:: python
 
-   >>> height2 = METER.from_string(userinput)  # FIXME remove `from_string`
+   >>> height2 = METER(userinput)
    >>> height == height2
    True
 
