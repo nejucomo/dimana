@@ -16,12 +16,12 @@ A Tour of `dimana`
 Parsing Values
 --------------
 
-`dimana` values can be parsed with the ``parse_value`` classmethod:
+`dimana` values can be parsed with the ``Value`` classmethod:
 
 .. code:: python
 
-   >>> from dimana import parse_value
-   >>> reward = parse_value('12.5 [BTC]')
+   >>> from dimana import Value
+   >>> reward = Value('12.5 [BTC]')
    >>> reward
    <Value '12.5 [BTC]'>
 
@@ -30,7 +30,7 @@ and a single division with the ``/`` symbol:
 
 .. code:: python
 
-   >>> parse_value('9.807 [meter/sec^2]')
+   >>> Value('9.807 [meter/sec^2]')
    <Value '9.807 [meter / sec^2]'>
 
 Arithmetic Operations
@@ -40,7 +40,7 @@ Values track their units through arithmetic operations:
 
 .. code:: python
 
-   >>> time = parse_value('10 [min]')
+   >>> time = Value('10 [min]')
    >>> rate = reward / time
    >>> rate
    <Value '1.25 [BTC / min]'>
@@ -83,7 +83,7 @@ including precision tracking:
 
 .. code:: python
 
-   >>> reward * parse_value('713.078000 [USD / BTC]')
+   >>> reward * Value('713.078000 [USD / BTC]')
    <Value '8913.4750000 [USD]'>
 
 Units
@@ -108,7 +108,7 @@ Construction
 
 There are four ways to create values:
 
-* parsing a 'value text': ``parse_value``,
+* parsing a 'value text': ``Value``,
 * as the result of arithmetic operations on other values,
 * explicitly with the ``Value`` constructor, or
 * with 'units-specific parsing`.
@@ -163,10 +163,10 @@ The ``str()``\ -ification of ``Value`` and ``Units`` instances matches the
 
 .. code:: python
 
-   >>> trolls = parse_value('3 [troll]')
+   >>> trolls = Value('3 [troll]')
    >>> print trolls
    3 [troll]
-   >>> trolls == parse_value(str(trolls))
+   >>> trolls == Value(str(trolls))
    True
 
 The ``repr()`` of these class instances contains the class name and the
@@ -207,8 +207,8 @@ ratios:
 .. code:: python
 
    >>> from dimana import Scalar
-   >>> total = parse_value('125 [meter]')
-   >>> current = parse_value('15 [meter]')
+   >>> total = Value('125 [meter]')
+   >>> current = Value('15 [meter]')
    >>> completion = current / total
    >>> completion
    <Value '0.12'>
@@ -221,7 +221,7 @@ numeric bugs:
 
 .. code:: python
 
-   >>> experience = parse_value('42 [XP]')
+   >>> experience = Value('42 [XP]')
    >>> experience * 1.25
    Traceback (most recent call last):
      ...
@@ -232,7 +232,7 @@ a value with no units specification gives a 'scalar value':
 
 .. code:: python
 
-   >>> experience * parse_value('1.25')
+   >>> experience * Value('1.25')
    <Value '52.50 [XP]'>
 
 Units Uniqueness and Matching

@@ -1,7 +1,8 @@
 import unittest
 from decimal import Decimal as D
+from dimana import _value
 from dimana._units import Units, UnitsMismatch, Scalar
-from dimana._value import Value, ValueParseError, parse_value
+from dimana._value import Value, ValueParseError
 from dimana.tests.util import ParseTestClass
 
 
@@ -23,68 +24,68 @@ class ValueConstructionTests (unittest.TestCase):
 
 class ValueArithmeticTests (unittest.TestCase):
     def test__cmp__(self):
-        a = parse_value('2 [meter / sec]')
-        b = parse_value('2 [meter / sec]')
-        c = parse_value('3 [meter / sec]')
+        a = Value('2 [meter / sec]')
+        b = Value('2 [meter / sec]')
+        c = Value('3 [meter / sec]')
 
         self.assertEqual(0, cmp(a, b))
         self.assertLess(0, cmp(c, a))
         self.assertGreater(0, cmp(a, c))
 
     def test__cmp__Mismatch(self):
-        a = parse_value('2 [meter / sec]')
-        b = parse_value('2 [kg]')
+        a = Value('2 [meter / sec]')
+        b = Value('2 [kg]')
         self.assertRaises(UnitsMismatch, cmp, a, b)
 
     def test__cmp__TypeError(self):
-        a = parse_value('2 [meter / sec]')
+        a = Value('2 [meter / sec]')
         self.assertRaises(TypeError, cmp, a, 'banana')
         self.assertRaises(TypeError, cmp, a, 42)
         self.assertRaises(TypeError, cmp, a, D('42'))
 
     def test__add__and__sub__ok(self):
-        a = parse_value('2 [meter / sec]')
-        b = parse_value('3 [meter / sec]')
-        c = parse_value('5 [meter / sec]')
-        d = parse_value('-1 [meter / sec]')
+        a = Value('2 [meter / sec]')
+        b = Value('3 [meter / sec]')
+        c = Value('5 [meter / sec]')
+        d = Value('-1 [meter / sec]')
         self.assertEqual(c, a+b)
         self.assertEqual(d, a-b)
 
     def test__add__and__sub__Mismatch(self):
-        a = parse_value('2 [meter / sec]')
-        b = parse_value('3 [kg]')
+        a = Value('2 [meter / sec]')
+        b = Value('3 [kg]')
         self.assertRaises(UnitsMismatch, Value.__add__, a, b)
 
     def test__mul__and__div__(self):
-        a = parse_value('3 [meter / sec]')
-        b = parse_value('2 [kg]')
-        c = parse_value('6 [kg * meter / sec]')
-        d = parse_value('1.5 [meter / (kg * sec)]')
+        a = Value('3 [meter / sec]')
+        b = Value('2 [kg]')
+        c = Value('6 [kg * meter / sec]')
+        d = Value('1.5 [meter / (kg * sec)]')
         self.assertEqual(c, a*b)
         self.assertEqual(d, a/b)
 
     def test__pow__no_modulus_ok(self):
-        a = parse_value('4 [meter / sec]')
-        b = parse_value('16 [meter^2 / sec^2]')
+        a = Value('4 [meter / sec]')
+        b = Value('16 [meter^2 / sec^2]')
         self.assertEqual(b, a**2)
 
     def test__pow__no_modulus_nonint_decimal_power_ok(self):
-        a = parse_value('4 [meter / sec]')
-        b = parse_value('8.0 [meter^1.5 / sec^1.5]')
+        a = Value('4 [meter / sec]')
+        b = Value('8.0 [meter^1.5 / sec^1.5]')
         self.assertEqual(b, a**D('1.5'))
 
     def test__pow__TypeError_modulus(self):
-        a = parse_value('3 [meter / sec]')
+        a = Value('3 [meter / sec]')
         self.assertRaises(TypeError, pow, a, 2, 4)
 
     def test__neg__and__pos__(self):
-        a = parse_value('3 [meter / sec]')
-        b = parse_value('-3 [meter / sec]')
+        a = Value('3 [meter / sec]')
+        b = Value('-3 [meter / sec]')
         self.assertIs(a, +a)
         self.assertEqual(b, -a)
 
 
-@ParseTestClass(Value, parse_value, ValueParseError)
+@ParseTestClass(Value, Value, ValueParseError)
 class ValueParseAndStringTests (unittest.TestCase):
 
     def assertParsedValueMatches(self, a, b):
@@ -175,3 +176,6 @@ class ValueDeprecatedAPITests (unittest.TestCase):
 
     def test_no_parse(self):
         self.assertFalse(hasattr(Value, 'parse'))
+
+    def test_mod_no_Value(self):
+        self.assertFalse(hasattr(_value, 'parse_value'))

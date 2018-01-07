@@ -18,11 +18,14 @@ def units_must_match(method):
 
 
 class Value (object):
-    def __init__(self, decimal, units):
-        typecheck(decimal, Decimal)
+    def __init__(self, spec, units=None):
+        if units is None:
+            (spec, units) = _parse_value(spec)
+
+        typecheck(spec, Decimal)
         typecheck(units, Units)
 
-        self.amount = decimal
+        self.amount = spec
         self.units = units
 
     # str/repr Methods:
@@ -72,7 +75,8 @@ class Value (object):
 Units._Value = Value
 
 
-def parse_value(text):
+# Private
+def _parse_value(text):
     m = _rgx.match(text)
     if m is None:
         raise ValueParseError('Could not parse Value: {!r}', text)
@@ -92,8 +96,7 @@ def parse_value(text):
         units = Scalar
     else:
         units = Units(unitext)
-    return Value(decimal, units)
+    return (decimal, units)
 
 
-# Private
 _rgx = re.compile(r'^(?P<decimal>\S+)( +\[(?P<units>.*?)\])?$')
