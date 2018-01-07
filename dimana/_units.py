@@ -1,17 +1,7 @@
 import re
 from decimal import Decimal, InvalidOperation
-from dimana import _exc
+from dimana.exceptions import UnitsMismatch, UnitsParseError
 from dimana._typecheck import typecheck
-
-
-class UnitsMismatch (TypeError):
-    """Represents binary operations on incompatible unit dimensions."""
-    def __init__(self, tmpl, *a):
-        TypeError.__init__(self, tmpl.format(*a))
-
-
-class UnitsParseError (_exc.ParseError):
-    pass
 
 
 class Units (object):

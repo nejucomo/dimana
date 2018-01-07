@@ -1,13 +1,9 @@
 import re
 from functools import wraps
 from decimal import Decimal, InvalidOperation
-from dimana import _exc
+from dimana.exceptions import ValueParseError
 from dimana._typecheck import typecheck
 from dimana._units import Units, Scalar, parse_units
-
-
-class ValueParseError (_exc.ParseError):
-    pass
 
 
 # Private Units-matching decorator:

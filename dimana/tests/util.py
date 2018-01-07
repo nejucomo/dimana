@@ -1,4 +1,4 @@
-from dimana import _exc
+from dimana.exceptions import BaseParseError
 
 
 def ParseTestClass(targetclass, target_parse, TargetParseError):
@@ -43,14 +43,14 @@ def ParseTestClass(targetclass, target_parse, TargetParseError):
                 testcls,
                 'test_parse_error_of {}'.format(make_title(badinput)),
                 lambda self, badinput=badinput: self.assertRaises(
-                    _exc.ParseError,
+                    BaseParseError,
                     target_parse,
                     badinput,
                 )
             )
 
         def test_ParseError_hierarchy(self):
-            self.assertTrue(issubclass(TargetParseError, _exc.ParseError))
+            self.assertTrue(issubclass(TargetParseError, BaseParseError))
 
         testcls.test_ParseError_hierarchy = test_ParseError_hierarchy
 
