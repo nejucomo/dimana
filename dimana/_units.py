@@ -4,60 +4,17 @@ from dimana import _exc
 from dimana._typecheck import typecheck
 
 
+class UnitsMismatch (TypeError):
+    """Represents binary operations on incompatible unit dimensions."""
+    def __init__(self, tmpl, *a):
+        TypeError.__init__(self, tmpl.format(*a))
+
+
+class UnitsParseError (_exc.ParseError):
+    pass
+
+
 class Units (object):
-
-    class Mismatch (TypeError):
-        """Represents binary operations on incompatible unit dimensions."""
-        def __init__(self, tmpl, *a):
-            TypeError.__init__(self, tmpl.format(*a))
-
-    class ParseError (_exc.ParseError):
-        pass
-
-    @classmethod
-    def parse(cls, text):
-        m = cls._rgx_frac.match(text)
-        if m is None:
-            raise cls.ParseError('Could not parse Units: {!r}', text)
-
-        loopinfo = []
-
-        numertext = m.group('numer')
-        if numertext != '1':
-            loopinfo.append((numertext, 1))
-
-        denomtext = m.group('denom')
-        if denomtext is not None:
-            if denomtext[0] == '(' and denomtext[-1] == ')':
-                denomtext = denomtext[1:-1]
-            loopinfo.append((denomtext, -1))
-
-        dp = {}
-        for t, inv in loopinfo:
-            for term in t.split('*'):
-                term = term.strip()
-                parts = term.split('^', 1)
-                if len(parts) == 1:
-                    parts.append('1')
-                try:
-                    [uname, powtext] = parts
-                    pow = Decimal(powtext) * inv
-
-                    if cls._rgx_uname.match(uname) is None:
-                        raise ValueError()
-
-                except (ValueError, InvalidOperation):
-                    raise cls.ParseError(
-                        'Could not parse Units term: {!r} in {!r}',
-                        term,
-                        text,
-                    )
-                pow += dp.pop(uname, 0)
-                if pow != 0:
-                    dp[uname] = pow
-
-        return cls(dp)
-
     def __new__(cls, dimpowers):
         dpkey = tuple(sorted(dimpowers.iteritems()))
         inst = cls._instances.get(dpkey)
@@ -92,7 +49,7 @@ class Units (object):
     def match(self, other):
         typecheck(other, Units)
         if self is not other:
-            raise Units.Mismatch(
+            raise UnitsMismatch(
                 'Units mismatch: {!r} vs {!r}',
                 str(self),
                 str(other),
@@ -172,26 +129,73 @@ class Units (object):
         return Units(newdp)
 
     # Private:
-    _rgx_frac = re.compile(
-        r'''
-          ^(?P<numer>
-            1
-            | [a-z]([a-z0-9_ *^.-]*?[a-z0-9_])?
-          )(
-            \ */\ *(?P<denom>
-              [a-z]([a-z0-9_ *^.-]*?[a-z0-9_])?
-              | \([a-z0-9_ *^.-]*?\)
-            )
-          )?$
-        ''',
-        re.IGNORECASE | re.VERBOSE,
-    )
-    _rgx_uname = re.compile(
-        r'^[a-z][a-z0-9_]*$',
-        re.IGNORECASE,
-    )
-
     _instances = {}
 
 
-Units.scalar = Units({})
+Scalar = Units({})
+
+
+def parse_units(text):
+    m = _rgx_frac.match(text)
+    if m is None:
+        raise UnitsParseError('Could not parse Units: {!r}', text)
+
+    loopinfo = []
+
+    numertext = m.group('numer')
+    if numertext != '1':
+        loopinfo.append((numertext, 1))
+
+    denomtext = m.group('denom')
+    if denomtext is not None:
+        if denomtext[0] == '(' and denomtext[-1] == ')':
+            denomtext = denomtext[1:-1]
+        loopinfo.append((denomtext, -1))
+
+    dp = {}
+    for t, inv in loopinfo:
+        for term in t.split('*'):
+            term = term.strip()
+            parts = term.split('^', 1)
+            if len(parts) == 1:
+                parts.append('1')
+            try:
+                [uname, powtext] = parts
+                pow = Decimal(powtext) * inv
+
+                if _rgx_uname.match(uname) is None:
+                    raise ValueError()
+
+            except (ValueError, InvalidOperation):
+                raise UnitsParseError(
+                    'Could not parse Units term: {!r} in {!r}',
+                    term,
+                    text,
+                )
+            pow += dp.pop(uname, 0)
+            if pow != 0:
+                dp[uname] = pow
+
+    return Units(dp)
+
+
+# Private:
+_rgx_frac = re.compile(
+    r'''
+      ^(?P<numer>
+        1
+        | [a-z]([a-z0-9_ *^.-]*?[a-z0-9_])?
+      )(
+        \ */\ *(?P<denom>
+          [a-z]([a-z0-9_ *^.-]*?[a-z0-9_])?
+          | \([a-z0-9_ *^.-]*?\)
+        )
+      )?$
+    ''',
+    re.IGNORECASE | re.VERBOSE,
+)
+
+_rgx_uname = re.compile(
+    r'^[a-z][a-z0-9_]*$',
+    re.IGNORECASE,
+)

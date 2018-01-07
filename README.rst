@@ -16,12 +16,12 @@ A Tour of `dimana`
 Parsing Values
 --------------
 
-`dimana` values can be parsed with the ``Value.parse`` classmethod:
+`dimana` values can be parsed with the ``parse_value`` classmethod:
 
 .. code:: python
 
-   >>> from dimana import Value
-   >>> reward = Value.parse('12.5 [BTC]')
+   >>> from dimana import parse_value
+   >>> reward = parse_value('12.5 [BTC]')
    >>> reward
    <Value '12.5 [BTC]'>
 
@@ -30,7 +30,7 @@ and a single division with the ``/`` symbol:
 
 .. code:: python
 
-   >>> Value.parse('9.807 [meter/sec^2]')
+   >>> parse_value('9.807 [meter/sec^2]')
    <Value '9.807 [meter / sec^2]'>
 
 Arithmetic Operations
@@ -40,7 +40,7 @@ Values track their units through arithmetic operations:
 
 .. code:: python
 
-   >>> time = Value.parse('10 [min]')
+   >>> time = parse_value('10 [min]')
    >>> rate = reward / time
    >>> rate
    <Value '1.25 [BTC / min]'>
@@ -52,7 +52,7 @@ Incoherent operations raise exceptions:
    >>> reward + time
    Traceback (most recent call last):
      ...
-   Mismatch: Units mismatch: 'BTC' vs 'min'
+   UnitsMismatch: Units mismatch: 'BTC' vs 'min'
 
 Value Components
 ----------------
@@ -83,7 +83,7 @@ including precision tracking:
 
 .. code:: python
 
-   >>> reward * Value.parse('713.078000 [USD / BTC]')
+   >>> reward * parse_value('713.078000 [USD / BTC]')
    <Value '8913.4750000 [USD]'>
 
 Units
@@ -95,11 +95,11 @@ instances directly:
 
 .. code:: python
 
-   >>> from dimana import Units
-   >>> meter = Units.parse('meter')
+   >>> from dimana import parse_units
+   >>> meter = parse_units('meter')
    >>> meter
    <Units 'meter'>
-   >>> sec = Units.parse('sec')
+   >>> sec = parse_units('sec')
    >>> sec
    <Units 'sec'>
 
@@ -108,7 +108,7 @@ Construction
 
 There are four ways to create values:
 
-* parsing a 'value text': ``Value.parse``,
+* parsing a 'value text': ``parse_value``,
 * as the result of arithmetic operations on other values,
 * explicitly with the ``Value`` constructor, or
 * with 'units-specific parsing`.
@@ -122,6 +122,7 @@ Values can be constructed directly given ``Decimal`` and ``Units`` instances:
 
 .. code:: python
 
+   >>> from dimana import Value
    >>> from decimal import Decimal
    >>> Value(Decimal('23.50'), meter)
    <Value '23.50 [meter]'>
@@ -136,8 +137,8 @@ explicit ``Units`` instances, for example:
 .. code:: python
 
    >>> from decimal import Decimal
-   >>> from dimana import Units, Value
-   >>> cm = Units.parse('cm')
+   >>> from dimana import Value, parse_units
+   >>> cm = parse_units('cm')
    >>> userinput = '163' # In an application this might be from arbitrary input.
    >>> height = Value(Decimal(userinput), cm)
    >>> height
@@ -148,8 +149,8 @@ an amount directly with the ``Units.from_string`` method:
 
 .. code:: python
 
-   >>> from dimana import Units
-   >>> cm = Units.parse('cm')
+   >>> from dimana import parse_units
+   >>> cm = parse_units('cm')
    >>> height2 = cm.from_string(userinput)
    >>> height == height2
    True
@@ -162,10 +163,10 @@ The ``str()``\ -ification of ``Value`` and ``Units`` instances matches the
 
 .. code:: python
 
-   >>> trolls = Value.parse('3 [troll]')
+   >>> trolls = parse_value('3 [troll]')
    >>> print trolls
    3 [troll]
-   >>> trolls == Value.parse(str(trolls))
+   >>> trolls == parse_value(str(trolls))
    True
 
 The ``repr()`` of these class instances contains the class name and the
@@ -200,17 +201,18 @@ Scalar Units
 ~~~~~~~~~~~~
 
 The base case of units with 'no dimension' is available as
-``Units.scalar``. This instance of ``Units`` represents, for example,
+``Scalar``. This instance of ``Units`` represents, for example,
 ratios:
 
 .. code:: python
 
-   >>> total = Value.parse('125 [meter]')
-   >>> current = Value.parse('15 [meter]')
+   >>> from dimana import Scalar
+   >>> total = parse_value('125 [meter]')
+   >>> current = parse_value('15 [meter]')
    >>> completion = current / total
    >>> completion
    <Value '0.12'>
-   >>> completion.units is Units.scalar
+   >>> completion.units is Scalar
    True
 
 By design, `dimana` does not do implicit coercion (such as promoting
@@ -219,18 +221,18 @@ numeric bugs:
 
 .. code:: python
 
-   >>> experience = Value.parse('42 [XP]')
+   >>> experience = parse_value('42 [XP]')
    >>> experience * 1.25
    Traceback (most recent call last):
      ...
    TypeError: Expected 'Value', found 'float'
 
-Using ``Units.scalar`` is necessary in these cases. Parsing
+Using ``Scalar`` is necessary in these cases. Parsing
 a value with no units specification gives a 'scalar value':
 
 .. code:: python
 
-   >>> experience * Value.parse('1.25')
+   >>> experience * parse_value('1.25')
    <Value '52.50 [XP]'>
 
 Units Uniqueness and Matching
@@ -242,7 +244,7 @@ There is a single instance of ``Units`` for each combination of unit:
 
    >>> (meter + meter) is meter
    True
-   >>> (meter / sec) is Units.parse('meter / sec')
+   >>> (meter / sec) is parse_units('meter / sec')
    True
 
 Thus, to test if two ``Units`` instances represent the same units,
@@ -250,21 +252,21 @@ just use the ``is`` operator:
 
 .. code:: python
 
-   >>> if meter is (Units.parse('meter / sec') * sec):
+   >>> if meter is (parse_units('meter / sec') * sec):
    ...     print 'Yes, it is meters.'
    ...
    Yes, it is meters.
 
-The ``Units.match`` method does such a check and raises ``Units.Mismatch``
+The ``Units.match`` method does such a check and raises ``UnitsMismatch``
 if the units do not match:
 
 .. code:: python
 
-   >>> meter.match(Units.parse('meter / sec') * sec)
-   >>> meter.match(Units.parse('meter / sec^2') * sec)
+   >>> meter.match(parse_units('meter / sec') * sec)
+   >>> meter.match(parse_units('meter / sec^2') * sec)
    Traceback (most recent call last):
      ...
-   Mismatch: Units mismatch: 'meter' vs 'meter / sec'
+   UnitsMismatch: Units mismatch: 'meter' vs 'meter / sec'
 
 Uniqueness Implications
 +++++++++++++++++++++++

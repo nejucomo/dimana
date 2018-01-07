@@ -3,7 +3,11 @@ from functools import wraps
 from decimal import Decimal, InvalidOperation
 from dimana import _exc
 from dimana._typecheck import typecheck
-from dimana._units import Units
+from dimana._units import Units, Scalar, parse_units
+
+
+class ValueParseError (_exc.ParseError):
+    pass
 
 
 # Private Units-matching decorator:
@@ -18,33 +22,6 @@ def units_must_match(method):
 
 
 class Value (object):
-
-    class ParseError (_exc.ParseError):
-        pass
-
-    @classmethod
-    def parse(cls, text):
-        m = cls._rgx.match(text)
-        if m is None:
-            raise cls.ParseError('Could not parse Value: {!r}', text)
-
-        dectext = m.group('decimal')
-        try:
-            decimal = Decimal(dectext)
-        except InvalidOperation as e:
-            raise cls.ParseError(
-                'Could not parse decimal {!r} of Value: {}',
-                dectext,
-                e,
-            )
-
-        unitext = m.group('units')
-        if unitext is None:
-            units = Units.scalar
-        else:
-            units = Units.parse(unitext)
-        return cls(decimal, units)
-
     def __init__(self, decimal, units):
         typecheck(decimal, Decimal)
         typecheck(units, Units)
@@ -54,7 +31,7 @@ class Value (object):
 
     # str/repr Methods:
     def __str__(self):
-        if self.units is Units.scalar:
+        if self.units is Scalar:
             return str(self.amount)
         else:
             return '{} [{}]'.format(self.amount, self.units)
@@ -94,9 +71,33 @@ class Value (object):
         else:
             raise TypeError('Modulus not supported for {!r}', self)
 
-    # Private
-    _rgx = re.compile(r'^(?P<decimal>\S+)( +\[(?P<units>.*?)\])?$')
-
 
 # UGLY HACK: work-around circular import issue:
 Units._Value = Value
+
+
+def parse_value(text):
+    m = _rgx.match(text)
+    if m is None:
+        raise ValueParseError('Could not parse Value: {!r}', text)
+
+    dectext = m.group('decimal')
+    try:
+        decimal = Decimal(dectext)
+    except InvalidOperation as e:
+        raise ValueParseError(
+            'Could not parse decimal {!r} of Value: {}',
+            dectext,
+            e,
+        )
+
+    unitext = m.group('units')
+    if unitext is None:
+        units = Scalar
+    else:
+        units = parse_units(unitext)
+    return Value(decimal, units)
+
+
+# Private
+_rgx = re.compile(r'^(?P<decimal>\S+)( +\[(?P<units>.*?)\])?$')

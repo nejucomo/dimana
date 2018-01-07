@@ -2,7 +2,12 @@
 
 import unittest
 from decimal import Decimal
-from dimana._units import Units
+from dimana._units import \
+    Scalar, \
+    Units, \
+    UnitsMismatch, \
+    UnitsParseError, \
+    parse_units
 from dimana._value import Value
 from dimana.tests.util import ParseTestClass
 
@@ -22,14 +27,14 @@ class UnitsUniquenessTests (unittest.TestCase):
         self.assertIs(u1, u2)
 
     def test_scalar(self):
-        self.assertIs(Units.scalar, Units({}))
+        self.assertIs(Scalar, Units({}))
 
 
 class UnitsValueConstructorTests (unittest.TestCase):
     def test_zero_and_one(self):
         unitses = [
-            Units.scalar,
-            Units.parse('GROM'),
+            Scalar,
+            parse_units('GROM'),
         ]
 
         for u in unitses:
@@ -37,8 +42,8 @@ class UnitsValueConstructorTests (unittest.TestCase):
             self.assertIsInstance(u.one, Value)
             self.assertEqual(Decimal('0'), u.zero.amount)
             self.assertEqual(Decimal('1'), u.one.amount)
-            self.assertEqual(Units.scalar.one, u.one / u.one)
-            self.assertEqual(u.zero, u.one * Units.scalar.zero)
+            self.assertEqual(Scalar.one, u.one / u.one)
+            self.assertEqual(u.zero, u.one * Scalar.zero)
             self.assertIs(u**2, (u.zero * u.one).units)
 
     def test_from_string(self):
@@ -51,8 +56,8 @@ class UnitsValueConstructorTests (unittest.TestCase):
         ]
 
         unitses = [
-            Units.scalar,
-            Units.parse('GROM'),
+            Scalar,
+            parse_units('GROM'),
         ]
 
         for units in unitses:
@@ -69,13 +74,13 @@ class UnitsArithmeticOperationsTests (unittest.TestCase):
         self.s = Units({'sec': 1})
 
         # All equivalences are tested for each case here:
-        self.eqcases = [Units.scalar, self.m, self.m * self.s, self.m / self.s]
+        self.eqcases = [Scalar, self.m, self.m * self.s, self.m / self.s]
 
     def test__add__(self):
         self.assertIs(self.m, self.m + self.m)
 
-    def test__add__Mismatch(self):
-        self.assertRaises(Units.Mismatch, lambda: self.m + self.s)
+    def test__add__UnitsMismatch(self):
+        self.assertRaises(UnitsMismatch, lambda: self.m + self.s)
 
     def test__add__TypeError(self):
         self.assertRaises(TypeError, lambda: self.m + 'banana')
@@ -116,11 +121,11 @@ class UnitsArithmeticOperationsTests (unittest.TestCase):
     # Equivalences:
     def test_scalar_cancellation_equivalence(self):
         for u in self.eqcases:
-            self.assertIs(Units.scalar, u / u)
+            self.assertIs(Scalar, u / u)
 
     def test_scalar_0_power(self):
         for u in self.eqcases:
-            self.assertIs(Units.scalar, u ** 0)
+            self.assertIs(Scalar, u ** 0)
 
     def test_mul_pow_equivalence(self):
         for u in self.eqcases:
@@ -132,10 +137,8 @@ class UnitsArithmeticOperationsTests (unittest.TestCase):
                 self.assertIs(u / k, u * (k ** -1))
 
 
-@ParseTestClass
+@ParseTestClass(Units, parse_units, UnitsParseError)
 class UnitsParseAndStrTests (unittest.TestCase):
-
-    targetclass = Units
 
     def assertParsedValueMatches(self, a, b):
         self.assertIs(a, b)
@@ -145,7 +148,7 @@ class UnitsParseAndStrTests (unittest.TestCase):
     kg = Units({'kg': 1})
 
     cases = [
-        (Units.scalar,
+        (Scalar,
          '1',
          ['foo^0',
           'x/x']),
@@ -216,3 +219,17 @@ class UnitsParseAndStrTests (unittest.TestCase):
         # This should trigger error on unit name parsing of term:
         'a ^2',
     ]
+
+
+class UnitsDeprecatedAPITests (unittest.TestCase):
+    def test_Mismatch(self):
+        self.assertFalse(hasattr(Units, 'Mismatch'))
+
+    def test_ParseError(self):
+        self.assertFalse(hasattr(Units, 'ParseError'))
+
+    def test_no_parse(self):
+        self.assertFalse(hasattr(Units, 'parse'))
+
+    def test_no_scalar(self):
+        self.assertFalse(hasattr(Units, 'scalar'))
