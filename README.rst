@@ -129,6 +129,8 @@ Values can be constructed explicitly directly given ``Decimal`` and ``Units`` in
 
 Note that this constructor is strict about types and the first argument *must* be a ``decimal.Decimal``:
 
+.. code:: python
+
    >>> Value(7, meter)
    Traceback (most recent call last):
      ...
