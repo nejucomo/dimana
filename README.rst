@@ -49,7 +49,7 @@ Incoherent operations raise exceptions:
 
 .. code:: python
 
-   >>> reward + time
+   >>> reward + time # doctest: +IGNORE_EXCEPTION_DETAIL
    Traceback (most recent call last):
      ...
    UnitsMismatch: 'BTC' does not match 'min'
@@ -175,7 +175,7 @@ The ``str()``\ -ification of ``Value`` and ``Units`` instances matches the
 .. code:: python
 
    >>> trolls = Value('3 [troll]')
-   >>> print trolls
+   >>> print(trolls)
    3 [troll]
    >>> trolls == Value(str(trolls))
    True
@@ -185,9 +185,9 @@ The ``repr()`` of these class instances contains the class name and the
 
 .. code:: python
 
-   >>> print repr(trolls)
+   >>> print(repr(trolls))
    <Value '3 [troll]'>
-   >>> print repr(trolls.units)
+   >>> print(repr(trolls.units))
    <Units 'troll'>
 
 More About Units
@@ -270,7 +270,7 @@ just use the ``is`` operator:
 .. code:: python
 
    >>> if meter is (Units('meter / sec') * sec):
-   ...     print 'Yes, it is meters.'
+   ...     print('Yes, it is meters.')
    ...
    Yes, it is meters.
 
@@ -280,7 +280,7 @@ if the units do not match:
 .. code:: python
 
    >>> meter.match(Units('meter / sec') * sec)
-   >>> meter.match(Units('meter / sec^2') * sec)
+   >>> meter.match(Units('meter / sec^2') * sec) # doctest: +IGNORE_EXCEPTION_DETAIL
    Traceback (most recent call last):
      ...
    UnitsMismatch: 'meter' does not match 'meter / sec'
@@ -364,3 +364,8 @@ a messier proof-of-concept.
   ``Units``.
 - It had less obvious error messages and less complete unit testing.
 - It had no documentation and no doctests.
+
+About This Document
+===================
+
+There appears to be no way to accurately test exception details with doctest for both python 2 and 3. The `best option <https://stackoverflow.com/questions/17671147/how-to-test-exceptions-with-doctest-in-python-2-x-and-3-x>`_ seems to be to ignore exception details. :-<

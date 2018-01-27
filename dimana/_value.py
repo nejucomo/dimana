@@ -38,11 +38,32 @@ class Value (object):
     def __repr__(self):
         return '<{} {!r}>'.format(type(self).__name__, str(self))
 
-    # Arithmetic Methods:
+    # Ordering Methods:
     @units_must_match
-    def __cmp__(self, other):
-        return cmp(self.amount, other.amount)
+    def __lt__(self, other):
+        return self.amount < other.amount
 
+    @units_must_match
+    def __le__(self, other):
+        return self.amount <= other.amount
+
+    @units_must_match
+    def __eq__(self, other):
+        return self.amount == other.amount
+
+    @units_must_match
+    def __ne__(self, other):
+        return self.amount != other.amount
+
+    @units_must_match
+    def __gt__(self, other):
+        return self.amount > other.amount
+
+    @units_must_match
+    def __ge__(self, other):
+        return self.amount >= other.amount
+
+    # Arithmetic Methods:
     def __pos__(self):
         return self
 
@@ -63,6 +84,8 @@ class Value (object):
     def __div__(self, other):
         typecheck(other, Value)
         return Value(self.amount / other.amount, self.units / other.units)
+
+    __truediv__ = __div__
 
     def __pow__(self, other, modulus=None):
         if modulus is None:

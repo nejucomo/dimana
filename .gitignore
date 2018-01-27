@@ -1,3 +1,5 @@
 dimana.pyc
 dimana.egg-info/
 test_dimana.pyc
+.tox/
+_trial_temp/

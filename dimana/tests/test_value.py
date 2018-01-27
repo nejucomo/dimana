@@ -1,5 +1,6 @@
 import unittest
 from decimal import Decimal as D
+from past.builtins import cmp
 from dimana import _value
 from dimana._units import Units, UnitsMismatch, Scalar
 from dimana._value import Value, ValueParseError
@@ -63,6 +64,9 @@ class ValueArithmeticTests (unittest.TestCase):
         d = Value('1.5 [meter / (kg * sec)]')
         self.assertEqual(c, a*b)
         self.assertEqual(d, a/b)
+
+    def test__truediv__is__div__(self):
+        self.assertEqual(Value.__truediv__, Value.__div__)
 
     def test__pow__no_modulus_ok(self):
         a = Value('4 [meter / sec]')

@@ -1,5 +1,6 @@
 import re
 from decimal import Decimal, InvalidOperation
+from future.utils import iteritems
 from dimana.exceptions import UnitsMismatch, UnitsParseError
 from dimana._typecheck import typecheck
 
@@ -7,10 +8,10 @@ from dimana._typecheck import typecheck
 class Units (object):
     def __new__(cls, spec):
         dimpowers = spec if type(spec) is dict else _parse_units(spec)
-        dpkey = tuple(sorted(dimpowers.iteritems()))
+        dpkey = tuple(sorted(iteritems(dimpowers)))
         inst = cls._instances.get(dpkey)
         if inst is None:
-            inst = super(Units, cls).__new__(cls, dimpowers)
+            inst = super(Units, cls).__new__(cls)
             inst._dimpowers = dimpowers
             inst._zero = None
             inst._one = None
@@ -52,7 +53,7 @@ class Units (object):
         def append_power(l, n, p):
             l.append(n if p == 1 else '{}^{}'.format(n, p))
 
-        for n, p in sorted(self._dimpowers.iteritems()):
+        for n, p in sorted(iteritems(self._dimpowers)):
             if p > 0:
                 append_power(numer, n, p)
             else:
@@ -89,9 +90,9 @@ class Units (object):
                     newdp[n] = p
 
             tmpdp = dict(self._dimpowers)
-            for uname, power in other._dimpowers.iteritems():
+            for uname, power in iteritems(other._dimpowers):
                 set_dp(uname, power + tmpdp.pop(uname, 0))
-            for uname, power in tmpdp.iteritems():
+            for uname, power in iteritems(tmpdp):
                 set_dp(uname, power)
             return Units(newdp)
         else:
@@ -108,7 +109,7 @@ class Units (object):
     def __pow__(self, p):
         newdp = {}
         if p != 0:
-            for uname, power in self._dimpowers.iteritems():
+            for uname, power in iteritems(self._dimpowers):
                 newdp[uname] = power * p
         return Units(newdp)
 

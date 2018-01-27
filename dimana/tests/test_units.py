@@ -55,7 +55,6 @@ class UnitsValueConstructorTests (unittest.TestCase):
             '-42.07000',
             0,
             1,
-            0x7L,
             42.3,
         ]
 
