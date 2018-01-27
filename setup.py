@@ -12,6 +12,9 @@ setup(
     version='0.3.dev0',
     url='https://github.org/nejucomo/{}'.format(PKG),
     license='TGPPLv1.0',
-    packages=find_packages(),
+    install_requires=[
+        'future == 0.16.0',
+    ],
     package_data={PKG: ['../README.rst']},
+    packages=find_packages(),
 )
