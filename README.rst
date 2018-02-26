@@ -329,6 +329,7 @@ Changelog
 
 - Removed old class-scoped APIs, such as `parse` methods, in favor of
   using constructors directly.
+- Added tox support for python 2.7 and 3.5.
 
 0.2.1
 ~~~~~
